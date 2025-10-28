@@ -23,6 +23,14 @@ public class Usuario {
     @Column(nullable = false)
     private String password;
 
+    public Usuario() {
+    }
+
+    public Usuario(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
+
     public Long getId() {
         return id;
     }
