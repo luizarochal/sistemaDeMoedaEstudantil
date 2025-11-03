@@ -84,7 +84,8 @@ public class UsuarioController {
     })
     @PostMapping("/login")
     public ResponseEntity<Usuario> login(@RequestParam String cpf, @RequestParam String password) {
-        // Implementação de autenticação
-        return ResponseEntity.ok().build();
+        Optional<Usuario> usuario = usuarioService.authenticate(cpf, password);
+        return usuario.map(ResponseEntity::ok)
+                      .orElseGet(() -> ResponseEntity.status(401).build());
     }
 }
