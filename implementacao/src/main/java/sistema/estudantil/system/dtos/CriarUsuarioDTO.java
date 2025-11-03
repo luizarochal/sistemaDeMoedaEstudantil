@@ -6,20 +6,20 @@ public class CriarUsuarioDTO {
     private String CPF;
     private String password;
 
-    public String getName() {
+    public String getNome() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.name = nome;
     }
 
-    public String getCPF() {
+    public String getCpf() {
         return CPF;
     }
 
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+    public void setCpf(String cpf) {
+        this.CPF = cpf;
     }
 
     public String getPassword() {

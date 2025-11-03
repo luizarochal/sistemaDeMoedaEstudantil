@@ -21,7 +21,7 @@ public class VantagemService {
     // CREATE (Implementa o "cadastrar()" do diagrama)
     @Transactional
     public Vantagem createVantagem(String empresaCnpj, Vantagem vantagem) {
-        Empresa empresa = empresaRepository.findById(empresaCnpj)
+        Empresa empresa = empresaRepository.findByCnpj(empresaCnpj)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada com CNPJ: " + empresaCnpj));
         
         vantagem.setEmpresaDono(empresa);
@@ -63,5 +63,10 @@ public class VantagemService {
             throw new RuntimeException("Vantagem não encontrada com ID: " + id);
         }
         vantagemRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Vantagem> getAllVantagens() {
+        return vantagemRepository.findAll();
     }
 }

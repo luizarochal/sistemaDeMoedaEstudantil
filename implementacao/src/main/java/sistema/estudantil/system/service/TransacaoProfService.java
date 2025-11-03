@@ -1,8 +1,8 @@
 package sistema.estudantil.system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sistema.estudantil.system.models.TransacaoProf;
 import sistema.estudantil.system.models.Aluno;
 import sistema.estudantil.system.models.Professor;
@@ -10,29 +10,52 @@ import sistema.estudantil.system.repositories.TransacaoProfRepository;
 
 import java.util.List;
 
+@Service
 public class TransacaoProfService {
+    
     @Autowired
     private ProfessorService professorService;
+    
     @Autowired
     private TransacaoProfRepository transacaoProfRepository;
+    
     @Autowired
     private AlunoService alunoService;
+    
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
-    public TransacaoProf realizarTransacao(TransacaoProf transacaoProf) {
-        Professor professor = professorService.buscarProfessorPorId(transacaoProf.getProfessor().getId())
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado com ID: " + transacaoProf.getProfessor().getId()));
+    public TransacaoProf realizarTransacao(Long professorId, Long alunoId, int quantidadeMoedas, String mensagem) {
+        Professor professor = professorService.buscarProfessorPorId(professorId)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado com ID: " + professorId));
 
-        Aluno aluno = alunoService.findById(transacaoProf.getAluno().getId())
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + transacaoProf.getAluno().getId()));
+        Aluno aluno = alunoService.findById(alunoId)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + alunoId));
 
+        // Verificar saldo do professor
+        if (professor.getQuantidadeMoedas() < quantidadeMoedas) {
+            throw new RuntimeException("Saldo insuficiente. Professor possui " + professor.getQuantidadeMoedas() + " moedas, mas tentou enviar " + quantidadeMoedas);
+        }
+
+        // Criar transação
         TransacaoProf transacao = new TransacaoProf();
         transacao.setProfessor(professor);
-        transacao.setQuantidadeMoedas(transacaoProf.getQuantidadeMoedas());
-        transacao.setMensagem(transacaoProf.getMensagem());
         transacao.setAluno(aluno);
+        transacao.setQuantidadeMoedas(quantidadeMoedas);
+        transacao.setMensagem(mensagem);
 
-        return transacaoProfRepository.save(transacao);
+        // Atualizar saldos
+        professorService.atualizarMoedas(professorId, -quantidadeMoedas);
+        alunoService.adicionarMoedas(alunoId, quantidadeMoedas);
+
+        // Salvar transação
+        TransacaoProf transacaoSalva = transacaoProfRepository.save(transacao);
+
+        // Enviar email de notificação
+        emailService.enviarEmailNotificacaoMoeda(aluno.getEmail(), professor.getNome(), quantidadeMoedas, mensagem);
+
+        return transacaoSalva;
     }
 
     public List<TransacaoProf> listarTodasTransacoes() {
@@ -44,13 +67,16 @@ public class TransacaoProfService {
                 .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
     }
 
+    public List<TransacaoProf> listarTransacoesPorProfessor(Long professorId) {
+        return transacaoProfRepository.findByProfessorId(professorId);
+    }
+
+    public List<TransacaoProf> listarTransacoesPorAluno(Long alunoId) {
+        return transacaoProfRepository.findByAlunoId(alunoId);
+    }
+
     @Transactional
     public void deletarTransacao(Long id) {
         transacaoProfRepository.deleteById(id);
     }
-
-    public TransacaoProf criarTransacao(TransacaoProf transacaoProf) {
-        return transacaoProfRepository.save(transacaoProf);
-    }
-
 }

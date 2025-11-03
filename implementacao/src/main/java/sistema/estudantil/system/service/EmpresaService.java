@@ -24,7 +24,7 @@ public class EmpresaService {
     // READ (One)
     @Transactional(readOnly = true)
     public Optional<Empresa> getEmpresaByCnpj(String cnpj) {
-        return empresaRepository.findById(cnpj);
+        return empresaRepository.findByCnpj(cnpj);
     }
 
     // READ (All)
@@ -36,7 +36,7 @@ public class EmpresaService {
     // UPDATE
     @Transactional
     public Empresa updateEmpresa(String cnpj, Empresa empresaDetails) {
-        Empresa empresa = empresaRepository.findById(cnpj)
+        Empresa empresa = empresaRepository.findByCnpj(cnpj)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada com CNPJ: " + cnpj));
         
         // Atualize os campos necessários (ex: nome, se houver)
@@ -49,9 +49,9 @@ public class EmpresaService {
     // DELETE
     @Transactional
     public void deleteEmpresa(String cnpj) {
-        if (!empresaRepository.existsById(cnpj)) {
+        if (!empresaRepository.existsByCnpj(cnpj)) {
             throw new RuntimeException("Empresa não encontrada com CNPJ: " + cnpj);
         }
-        empresaRepository.deleteById(cnpj);
+        empresaRepository.deleteByCnpj(cnpj);
     }
 }

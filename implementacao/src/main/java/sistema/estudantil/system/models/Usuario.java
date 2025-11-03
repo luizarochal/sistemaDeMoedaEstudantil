@@ -1,36 +1,38 @@
 package sistema.estudantil.system.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "usuarios")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
-
     @Column(nullable = false)
-    private String CPF;
+    private String nome;
+
+    @Column(nullable = false, unique = true)
+    private String cpf;
 
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
     public Usuario() {
     }
 
-    public Usuario(String name, String password) {
-        this.name = name;
+    public Usuario(String nome, String cpf, String password, String email) {
+        this.nome = nome;
+        this.cpf = cpf;
         this.password = password;
+        this.email = email;
     }
 
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -39,12 +41,20 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public String getPassword() {
@@ -55,12 +65,11 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getCPF() {
-        return CPF;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+    public void setEmail(String email) {
+        this.email = email;
     }
-    
 }

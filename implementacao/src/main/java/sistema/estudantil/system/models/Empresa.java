@@ -1,44 +1,30 @@
 package sistema.estudantil.system.models;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
-
-import sistema.estudantil.system.models.UsuarioAlunoEmpresa;
-import sistema.estudantil.system.models.Vantagem;
-
-
 @Entity
-@Table(name = "empresa")
-@PrimaryKeyJoinColumn(name = "empresa_id")
-public class Empresa extends UsuarioAlunoEmpresa {
+@Table(name = "empresas")
+@PrimaryKeyJoinColumn(name = "usuario_id")
+public class Empresa extends Usuario {
 
-    @Id
     @Column(nullable = false, unique = true, length = 14)
     private String cnpj;
 
-    @OneToMany(
-        mappedBy = "empresaDono",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
+    private String endereco;
+
+    @OneToMany(mappedBy = "empresaDono", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Vantagem> vantagens = new ArrayList<>();
 
     public Empresa() {
+        super();
     }
 
-    public Empresa(String cnpj) {
+    public Empresa(String nome, String cnpj, String password, String email, String endereco) {
+        super(nome, cnpj, password, email);
         this.cnpj = cnpj;
+        this.endereco = endereco;
     }
 
     public void addVantagem(Vantagem vantagem) {
@@ -46,23 +32,31 @@ public class Empresa extends UsuarioAlunoEmpresa {
         vantagem.setEmpresaDono(this);
     }
 
-    public String removeVantagem(Long idVantagem) {
-        boolean removed = this.vantagens.removeIf(vantagem -> {
+    public boolean removeVantagem(Long idVantagem) {
+        return this.vantagens.removeIf(vantagem -> {
             if (vantagem.getIdVantagem().equals(idVantagem)) {
-                vantagem.setEmpresaDono(null); 
+                vantagem.setEmpresaDono(null);
+                return true;
             }
             return false;
         });
-        
-        return removed ? "Vantagem removida com sucesso." : "Vantagem não encontrada.";
     }
 
+    // Getters e Setters
     public String getCnpj() {
         return cnpj;
     }
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 
     public List<Vantagem> getVantagens() {
@@ -72,5 +66,4 @@ public class Empresa extends UsuarioAlunoEmpresa {
     public void setVantagens(List<Vantagem> vantagens) {
         this.vantagens = vantagens;
     }
-
 }

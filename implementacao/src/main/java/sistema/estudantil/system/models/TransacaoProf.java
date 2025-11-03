@@ -1,14 +1,7 @@
 package sistema.estudantil.system.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transacoes_prof")
@@ -22,16 +15,24 @@ public class TransacaoProf {
     @JoinColumn(name = "professor_id", nullable = false)
     private Professor professor;
 
-    @Column(nullable = false)
-    private int quantidadeMoedas;
-
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "aluno_id", nullable = false)
     private Aluno aluno;
 
     @Column(nullable = false)
+    private int quantidadeMoedas;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String mensagem;
 
-    // Getters and Setters
+    @Column(nullable = false)
+    private LocalDateTime dataTransacao;
+
+    public TransacaoProf() {
+        this.dataTransacao = LocalDateTime.now();
+    }
+
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -48,20 +49,20 @@ public class TransacaoProf {
         this.professor = professor;
     }
 
-    public int getQuantidadeMoedas() {
-        return quantidadeMoedas;
-    }
-
-    public void setQuantidadeMoedas(int quantidadeMoedas) {
-        this.quantidadeMoedas = quantidadeMoedas;
-    }
-
     public Aluno getAluno() {
         return aluno;
     }
 
     public void setAluno(Aluno aluno) {
         this.aluno = aluno;
+    }
+
+    public int getQuantidadeMoedas() {
+        return quantidadeMoedas;
+    }
+
+    public void setQuantidadeMoedas(int quantidadeMoedas) {
+        this.quantidadeMoedas = quantidadeMoedas;
     }
 
     public String getMensagem() {
@@ -71,5 +72,12 @@ public class TransacaoProf {
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
     }
-    
+
+    public LocalDateTime getDataTransacao() {
+        return dataTransacao;
+    }
+
+    public void setDataTransacao(LocalDateTime dataTransacao) {
+        this.dataTransacao = dataTransacao;
+    }
 }

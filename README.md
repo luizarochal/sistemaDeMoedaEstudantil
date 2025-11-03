@@ -36,3 +36,5 @@ Como empresa parceira, quero cadastrar vantagens com descrição, custo e foto, 
 Como empresa parceira, quero receber um email com o código de troca, para validar o uso do benefício.
 
 Como administrador, quero cadastrar instituições de ensino, para permitir que alunos e professores se vinculem a elas.
+
+Como aluno, quero me cadastrar em uma instituição de ensino, para participar do sistema de mérito.
