@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.EmpresaService;
+import sistema.estudantil.system.dtos.CriarEmpresaDTO;
 import sistema.estudantil.system.models.Empresa;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,7 +29,14 @@ public class EmpresaController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping
-    public ResponseEntity<Empresa> createEmpresa(@RequestBody Empresa empresa) {
+    public ResponseEntity<Empresa> createEmpresa(@RequestBody CriarEmpresaDTO empresaDTO) {
+        Empresa empresa = new Empresa();
+        empresa.setCnpj(empresaDTO.getCnpj());
+        empresa.setNome(empresaDTO.getNome());
+        empresa.setEndereco(empresaDTO.getEndereco());
+        empresa.setPassword(empresaDTO.getSenha());
+        empresa.setEmail(empresaDTO.getEmail());
+
         return ResponseEntity.ok(empresaService.createEmpresa(empresa));
     }
 
@@ -63,9 +71,16 @@ public class EmpresaController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{cnpj}")
-    public ResponseEntity<Empresa> updateEmpresa(@PathVariable String cnpj, @RequestBody Empresa empresaDetails) {
+    public ResponseEntity<Empresa> updateEmpresa(@PathVariable String cnpj, @RequestBody CriarEmpresaDTO empresaDTO) {
         try {
-            return ResponseEntity.ok(empresaService.updateEmpresa(cnpj, empresaDetails));
+            Empresa empresa = new Empresa();
+            empresa.setCnpj(empresaDTO.getCnpj());
+            empresa.setNome(empresaDTO.getNome());
+            empresa.setEndereco(empresaDTO.getEndereco());
+            empresa.setPassword(empresaDTO.getSenha());
+            empresa.setEmail(empresaDTO.getEmail());
+
+            return ResponseEntity.ok(empresaService.updateEmpresa(cnpj, empresa));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

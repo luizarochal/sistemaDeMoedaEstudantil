@@ -38,10 +38,20 @@ public class EmpresaService {
     public Empresa updateEmpresa(String cnpj, Empresa empresaDetails) {
         Empresa empresa = empresaRepository.findByCnpj(cnpj)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada com CNPJ: " + cnpj));
-        
-        // Atualize os campos necessários (ex: nome, se houver)
-        // No diagrama, Empresa só tem 'cnpj', então não há muito o que atualizar
-        // Ex: empresa.setNome(empresaDetails.getNome());
+
+        if(empresaDetails.getNome() != null){
+            empresa.setNome(empresaDetails.getNome());
+        }
+        if(empresaDetails.getEndereco() != null){
+            empresa.setEndereco(empresaDetails.getEndereco());
+        }
+        if(empresaDetails.getPassword() != null){
+            empresa.setPassword(empresaDetails.getPassword());
+        }
+        if(empresaDetails.getEmail() != null){
+            empresa.setEmail(empresaDetails.getEmail());
+        }
+
         
         return empresaRepository.save(empresa);
     }

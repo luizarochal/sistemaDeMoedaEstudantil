@@ -3,9 +3,12 @@ package sistema.estudantil.system.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import sistema.estudantil.system.models.Usuario;
 import sistema.estudantil.system.repositories.UsuarioRepository;
 
+@Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
@@ -30,7 +33,7 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public Optional<Usuario> authenticate(String cpf, String password) {
-        return usuarioRepository.findByCpfAndPassword(cpf, password);
+    public Optional<Usuario> authenticate(String email, String password) {
+        return usuarioRepository.findByEmailAndPassword(email, password);
     }
 }

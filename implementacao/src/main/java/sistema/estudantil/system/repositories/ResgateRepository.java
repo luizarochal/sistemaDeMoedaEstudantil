@@ -10,5 +10,5 @@ import java.util.List;
 public interface ResgateRepository extends JpaRepository<Resgate, Long> {
     List<Resgate> findByAlunoId(Long alunoId);
     List<Resgate> findByVantagemEmpresaDonoCnpj(String cnpj);
-    List<Resgate> findByVantagemId(Long vantagemId);
+    List<Resgate> findByVantagemIdVantagem(Long idVantagem);
 }

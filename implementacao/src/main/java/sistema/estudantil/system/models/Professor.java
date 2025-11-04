@@ -10,6 +10,9 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "usuario_id")
 public class Professor extends Usuario {
 
+    @Column(nullable = false, unique = true)
+    private String cpf;
+
     @Column(nullable = false)
     private String departamento;
 
@@ -29,7 +32,8 @@ public class Professor extends Usuario {
     }
 
     public Professor(String nome, String cpf, String password, String email, String departamento, String instituicao) {
-        super(nome, cpf, password, email);
+        super(nome, password, email);
+        this.cpf = cpf;
         this.departamento = departamento;
         this.instituicao = instituicao;
         this.dataUltimaRecarga = LocalDateTime.now();
@@ -74,5 +78,13 @@ public class Professor extends Usuario {
 
     public void setTransacoesRealizadas(List<TransacaoProf> transacoesRealizadas) {
         this.transacoesRealizadas = transacoesRealizadas;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 }

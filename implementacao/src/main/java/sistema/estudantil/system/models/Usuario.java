@@ -13,9 +13,6 @@ public class Usuario {
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false, unique = true)
-    private String cpf;
-
     @Column(nullable = false)
     private String password;
 
@@ -25,9 +22,8 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String nome, String cpf, String password, String email) {
+    public Usuario(String nome, String password, String email) {
         this.nome = nome;
-        this.cpf = cpf;
         this.password = password;
         this.email = email;
     }
@@ -47,14 +43,6 @@ public class Usuario {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
     }
 
     public String getPassword() {

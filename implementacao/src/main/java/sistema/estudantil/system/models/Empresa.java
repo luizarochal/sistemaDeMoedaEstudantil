@@ -9,7 +9,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "usuario_id")
 public class Empresa extends Usuario {
 
-    @Column(nullable = false, unique = true, length = 14)
+    @Column(nullable = false, unique = true)
     private String cnpj;
 
     private String endereco;
@@ -21,8 +21,8 @@ public class Empresa extends Usuario {
         super();
     }
 
-    public Empresa(String nome, String cnpj, String password, String email, String endereco) {
-        super(nome, cnpj, password, email);
+    public Empresa(String nome, String password, String email, String cnpj, String endereco) {
+        super(nome, password, email);
         this.cnpj = cnpj;
         this.endereco = endereco;
     }

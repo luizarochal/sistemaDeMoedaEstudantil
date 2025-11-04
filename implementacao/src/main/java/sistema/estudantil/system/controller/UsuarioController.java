@@ -58,7 +58,6 @@ public class UsuarioController {
     public ResponseEntity<Usuario> create(@RequestBody CriarUsuarioDTO criarUsuarioDTO) {
         Usuario usuario = new Usuario();
         usuario.setNome(criarUsuarioDTO.getNome());
-        usuario.setCpf(criarUsuarioDTO.getCpf());
         usuario.setPassword(criarUsuarioDTO.getPassword());
         return ResponseEntity.ok(usuarioService.save(usuario));
     }
@@ -83,8 +82,8 @@ public class UsuarioController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping("/login")
-    public ResponseEntity<Usuario> login(@RequestParam String cpf, @RequestParam String password) {
-        Optional<Usuario> usuario = usuarioService.authenticate(cpf, password);
+    public ResponseEntity<Usuario> login(@RequestParam String email, @RequestParam String password) {
+        Optional<Usuario> usuario = usuarioService.authenticate(email, password);
         return usuario.map(ResponseEntity::ok)
                       .orElseGet(() -> ResponseEntity.status(401).build());
     }

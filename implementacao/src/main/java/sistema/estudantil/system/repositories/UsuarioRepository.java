@@ -9,5 +9,5 @@ import sistema.estudantil.system.models.Usuario;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    Optional<Usuario> findByCpfAndPassword(String cpf, String password);
+    Optional<Usuario> findByEmailAndPassword(String email, String password);
 }

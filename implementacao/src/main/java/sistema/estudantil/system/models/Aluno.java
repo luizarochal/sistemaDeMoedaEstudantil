@@ -8,6 +8,9 @@ import java.util.List;
 @Table(name = "alunos")
 @PrimaryKeyJoinColumn(name = "usuario_id")
 public class Aluno extends Usuario {
+
+    @Column(nullable = false, unique = true)
+    private String cpf;
     
     @Column(nullable = false)
     private String rg;
@@ -33,7 +36,8 @@ public class Aluno extends Usuario {
     }
 
     public Aluno(String nome, String cpf, String password, String email, String rg, String endereco, String instituicao, String curso) {
-        super(nome, cpf, password, email);
+        super(nome, password, email);
+        this.cpf = cpf;
         this.rg = rg;
         this.endereco = endereco;
         this.instituicao = instituicao;
@@ -95,5 +99,13 @@ public class Aluno extends Usuario {
 
     public void setResgates(List<Resgate> resgates) {
         this.resgates = resgates;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 }
