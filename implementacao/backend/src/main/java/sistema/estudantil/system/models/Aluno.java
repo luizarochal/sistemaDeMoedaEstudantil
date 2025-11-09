@@ -11,32 +11,34 @@ public class Aluno extends Usuario {
 
     @Column(nullable = false, unique = true)
     private String cpf;
-    
+
     @Column(nullable = false)
     private String rg;
-    
+
     private String endereco;
-    
+
     @Column(nullable = false)
     private String instituicao;
-    
+
     @Column(nullable = false)
     private String curso;
-    
+
     private float quantidadeMoedas = 0;
-    
+
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TransacaoProf> transacoesRecebidas = new ArrayList<>();
-    
+
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Resgate> resgates = new ArrayList<>();
 
     public Aluno() {
         super();
+        this.setRole("ROLE_ALUNO"); // 🔑 Define o tipo de usuário automaticamente
     }
 
-    public Aluno(String nome, String cpf, String password, String email, String rg, String endereco, String instituicao, String curso) {
-        super(nome, password, email);
+    public Aluno(String nome, String cpf, String password, String email, String rg, String endereco, String instituicao,
+            String curso) {
+        super(nome, password, email, "ROLE_ALUNO");
         this.cpf = cpf;
         this.rg = rg;
         this.endereco = endereco;
@@ -45,6 +47,14 @@ public class Aluno extends Usuario {
     }
 
     // Getters e Setters
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
     public String getRg() {
         return rg;
     }
@@ -99,13 +109,5 @@ public class Aluno extends Usuario {
 
     public void setResgates(List<Resgate> resgates) {
         this.resgates = resgates;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
     }
 }

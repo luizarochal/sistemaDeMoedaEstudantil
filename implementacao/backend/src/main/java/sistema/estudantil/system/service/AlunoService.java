@@ -3,6 +3,8 @@ package sistema.estudantil.system.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.lang.NonNull;
 import sistema.estudantil.system.models.Aluno;
 import sistema.estudantil.system.repositories.AlunoRepository;
 
@@ -19,11 +21,11 @@ public class AlunoService {
         return alunoRepository.findAll();
     }
 
-    public Optional<Aluno> findById(Long id) {
+    public Optional<Aluno> findById(@NonNull Long id) {
         return alunoRepository.findById(id);
     }
 
-    public Optional<Aluno> findByEmail(String email) {
+    public Optional<Aluno> findByEmail(@NonNull String email) {
         return alunoRepository.findByEmail(email);
     }
 
@@ -37,7 +39,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public Aluno update(Long id, Aluno alunoDetails) {
+    public Aluno update(@NonNull Long id, Aluno alunoDetails) {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado com id: " + id));
 
@@ -50,15 +52,16 @@ public class AlunoService {
         return alunoRepository.save(aluno);
     }
 
+    @SuppressWarnings("null")
     @Transactional
-    public void delete(Long id) {
+    public void delete(@NonNull Long id) {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado com id: " + id));
         alunoRepository.delete(aluno);
     }
 
     @Transactional
-    public Aluno adicionarMoedas(Long id, float moedas) {
+    public Aluno adicionarMoedas(@NonNull Long id, float moedas) {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado com id: " + id));
         
@@ -69,7 +72,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public Aluno removerMoedas(Long id, float moedas) {
+    public Aluno removerMoedas(@NonNull Long id, float moedas) {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado com id: " + id));
         

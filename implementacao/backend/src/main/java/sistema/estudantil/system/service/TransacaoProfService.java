@@ -1,6 +1,7 @@
 package sistema.estudantil.system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sistema.estudantil.system.models.TransacaoProf;
@@ -12,21 +13,21 @@ import java.util.List;
 
 @Service
 public class TransacaoProfService {
-    
+
     @Autowired
     private ProfessorService professorService;
-    
+
     @Autowired
     private TransacaoProfRepository transacaoProfRepository;
-    
+
     @Autowired
     private AlunoService alunoService;
-    
+
     @Autowired
     private EmailService emailService;
 
     @Transactional
-    public TransacaoProf realizarTransacao(Long professorId, Long alunoId, int quantidadeMoedas, String mensagem) {
+    public TransacaoProf realizarTransacao(@NonNull Long professorId, @NonNull Long alunoId, int quantidadeMoedas, String mensagem) {
         Professor professor = professorService.buscarProfessorPorId(professorId)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado com ID: " + professorId));
 
@@ -35,7 +36,8 @@ public class TransacaoProfService {
 
         // Verificar saldo do professor
         if (professor.getQuantidadeMoedas() < quantidadeMoedas) {
-            throw new RuntimeException("Saldo insuficiente. Professor possui " + professor.getQuantidadeMoedas() + " moedas, mas tentou enviar " + quantidadeMoedas);
+            throw new RuntimeException("Saldo insuficiente. Professor possui " + professor.getQuantidadeMoedas()
+                    + " moedas, mas tentou enviar " + quantidadeMoedas);
         }
 
         // Criar transação
@@ -62,7 +64,7 @@ public class TransacaoProfService {
         return transacaoProfRepository.findAll();
     }
 
-    public TransacaoProf obterTransacaoPorId(Long id) {
+    public TransacaoProf obterTransacaoPorId(@NonNull Long id) {
         return transacaoProfRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
     }
@@ -76,7 +78,7 @@ public class TransacaoProfService {
     }
 
     @Transactional
-    public void deletarTransacao(Long id) {
+    public void deletarTransacao(@NonNull Long id) {
         transacaoProfRepository.deleteById(id);
     }
 }

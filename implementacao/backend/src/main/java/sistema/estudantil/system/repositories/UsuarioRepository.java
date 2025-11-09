@@ -1,13 +1,13 @@
 package sistema.estudantil.system.repositories;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import sistema.estudantil.system.models.Usuario;
+import java.util.Optional;
 
-@Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-
-    Optional<Usuario> findByEmailAndPassword(String email, String password);
+    Optional<Usuario> findByEmail(String email);
+    boolean existsByEmail(String email);
+    
+    // REMOVA este método se existir:
+    // Optional<Usuario> findByEmailAndPassword(String email, String password); // ❌
 }

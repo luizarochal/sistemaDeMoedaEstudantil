@@ -1,6 +1,7 @@
 package sistema.estudantil.system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sistema.estudantil.system.models.Resgate;
@@ -28,7 +29,7 @@ public class ResgateService {
     private EmailService emailService;
 
     @Transactional
-    public Resgate resgatarVantagem(Long alunoId, Long vantagemId) {
+    public Resgate resgatarVantagem(@NonNull Long alunoId,@NonNull Long vantagemId) {
         Aluno aluno = alunoService.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + alunoId));
 
@@ -37,8 +38,8 @@ public class ResgateService {
 
         // Verificar saldo do aluno
         if (aluno.getQuantidadeMoedas() < vantagem.getCusto()) {
-            throw new RuntimeException("Saldo insuficiente. Aluno possui " + aluno.getQuantidadeMoedas() + 
-                                     " moedas, mas a vantagem custa " + vantagem.getCusto());
+            throw new RuntimeException("Saldo insuficiente. Aluno possui " + aluno.getQuantidadeMoedas() +
+                    " moedas, mas a vantagem custa " + vantagem.getCusto());
         }
 
         // Gerar código do cupom
@@ -73,15 +74,15 @@ public class ResgateService {
     }
 
     @Transactional
-    public void marcarCupomComoUtilizado(Long resgateId) {
+    public void marcarCupomComoUtilizado(@NonNull Long resgateId) {
         Resgate resgate = resgateRepository.findById(resgateId)
                 .orElseThrow(() -> new RuntimeException("Resgate não encontrado com ID: " + resgateId));
-        
+
         resgate.setUtilizado(true);
         resgateRepository.save(resgate);
     }
 
-    public Resgate obterResgatePorId(Long id) {
+    public Resgate obterResgatePorId(@NonNull Long id) {
         return resgateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resgate não encontrado com ID: " + id));
     }

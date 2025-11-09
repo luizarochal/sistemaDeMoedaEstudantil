@@ -29,10 +29,11 @@ public class Professor extends Usuario {
 
     public Professor() {
         super();
+        this.setRole("ROLE_PROFESSOR"); // 🔑 Define o tipo de usuário automaticamente
     }
 
     public Professor(String nome, String cpf, String password, String email, String departamento, String instituicao) {
-        super(nome, password, email);
+         super(nome, password, email, "ROLE_PROFESSOR");
         this.cpf = cpf;
         this.departamento = departamento;
         this.instituicao = instituicao;

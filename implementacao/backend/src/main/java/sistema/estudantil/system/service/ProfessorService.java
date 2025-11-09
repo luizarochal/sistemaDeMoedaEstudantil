@@ -1,6 +1,7 @@
 package sistema.estudantil.system.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ public class ProfessorService {
         return professorRepository.save(professor);
     }
 
-    public Optional<Professor> buscarProfessorPorId(Long id) {
+    public Optional<Professor> buscarProfessorPorId(@NonNull Long id) {
         return professorRepository.findById(id);
     }
 
@@ -34,7 +35,7 @@ public class ProfessorService {
     }
 
     @Transactional
-    public void deletarProfessor(Long id) {
+    public void deletarProfessor(@NonNull Long id) {
         professorRepository.deleteById(id);
     }
 
@@ -57,7 +58,7 @@ public class ProfessorService {
     }
 
     @Transactional
-    public Professor atualizarMoedas(Long professorId, int quantidade) {
+    public Professor atualizarMoedas(@NonNull Long professorId, int quantidade) {
         Professor professor = professorRepository.findById(professorId)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado com ID: " + professorId));
         

@@ -19,10 +19,11 @@ public class Empresa extends Usuario {
 
     public Empresa() {
         super();
+        this.setRole("ROLE_EMPRESA"); // 🔑 Define o tipo de usuário automaticamente
     }
 
     public Empresa(String nome, String password, String email, String cnpj, String endereco) {
-        super(nome, password, email);
+         super(nome, password, email, "ROLE_EMPRESA");
         this.cnpj = cnpj;
         this.endereco = endereco;
     }

@@ -1,12 +1,13 @@
 package sistema.estudantil.system.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sistema.estudantil.system.repositories.EmpresaRepository;
 import java.util.List;
 import java.util.Optional;
 import sistema.estudantil.system.models.Empresa;
-
 
 @Service
 public class EmpresaService {
@@ -16,14 +17,13 @@ public class EmpresaService {
 
     // CREATE
     @Transactional
-    public Empresa createEmpresa(Empresa empresa) {
-        // Adicionar validação de CNPJ aqui, se necessário
+    public Empresa createEmpresa(@NonNull Empresa empresa) {
         return empresaRepository.save(empresa);
     }
 
     // READ (One)
     @Transactional(readOnly = true)
-    public Optional<Empresa> getEmpresaByCnpj(String cnpj) {
+    public Optional<Empresa> getEmpresaByCnpj(@NonNull String cnpj) {
         return empresaRepository.findByCnpj(cnpj);
     }
 
@@ -34,8 +34,9 @@ public class EmpresaService {
     }
 
     // UPDATE
+    @SuppressWarnings("null")
     @Transactional
-    public Empresa updateEmpresa(String cnpj, Empresa empresaDetails) {
+    public Empresa updateEmpresa(@NonNull String cnpj, @NonNull Empresa empresaDetails) {
         Empresa empresa = empresaRepository.findByCnpj(cnpj)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada com CNPJ: " + cnpj));
 
@@ -52,13 +53,12 @@ public class EmpresaService {
             empresa.setEmail(empresaDetails.getEmail());
         }
 
-        
         return empresaRepository.save(empresa);
     }
 
     // DELETE
     @Transactional
-    public void deleteEmpresa(String cnpj) {
+    public void deleteEmpresa(@NonNull String cnpj) {
         if (!empresaRepository.existsByCnpj(cnpj)) {
             throw new RuntimeException("Empresa não encontrada com CNPJ: " + cnpj);
         }

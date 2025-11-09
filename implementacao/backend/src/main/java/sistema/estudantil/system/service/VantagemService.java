@@ -1,4 +1,5 @@
 package sistema.estudantil.system.service;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import sistema.estudantil.system.models.Vantagem;
 import sistema.estudantil.system.models.Empresa;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.lang.NonNull;
 
 @Service
 public class VantagemService {
@@ -23,15 +25,15 @@ public class VantagemService {
     public Vantagem createVantagem(String empresaCnpj, Vantagem vantagem) {
         Empresa empresa = empresaRepository.findByCnpj(empresaCnpj)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada com CNPJ: " + empresaCnpj));
-        
+
         vantagem.setEmpresaDono(empresa);
-        
+
         return vantagemRepository.save(vantagem);
     }
 
     // READ (One)
     @Transactional(readOnly = true)
-    public Optional<Vantagem> getVantagemById(Long id) {
+    public Optional<Vantagem> getVantagemById(@NonNull Long id) {
         return vantagemRepository.findById(id);
     }
 
@@ -43,7 +45,7 @@ public class VantagemService {
 
     // UPDATE
     @Transactional
-    public Vantagem updateVantagem(Long id, Vantagem vantagemDetails) {
+    public Vantagem updateVantagem(@NonNull Long id, Vantagem vantagemDetails) {
         Vantagem vantagem = vantagemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Vantagem não encontrada com ID: " + id));
 
@@ -58,7 +60,7 @@ public class VantagemService {
 
     // DELETE
     @Transactional
-    public void deleteVantagem(Long id) {
+    public void deleteVantagem(@NonNull Long id) {
         if (!vantagemRepository.existsById(id)) {
             throw new RuntimeException("Vantagem não encontrada com ID: " + id);
         }

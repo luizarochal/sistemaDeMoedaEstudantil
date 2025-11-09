@@ -73,18 +73,4 @@ public class UsuarioController {
         usuarioService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-    @Operation(summary = "Autenticar usuário", description = "Realiza a autenticação de um usuário no sistema")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuário autenticado com sucesso"),
-        @ApiResponse(responseCode = "401", description = "Credenciais inválidas"),
-        @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @PostMapping("/login")
-    public ResponseEntity<Usuario> login(@RequestParam String email, @RequestParam String password) {
-        Optional<Usuario> usuario = usuarioService.authenticate(email, password);
-        return usuario.map(ResponseEntity::ok)
-                      .orElseGet(() -> ResponseEntity.status(401).build());
-    }
 }

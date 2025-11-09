@@ -3,6 +3,7 @@ package sistema.estudantil.system.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import sistema.estudantil.system.models.Usuario;
@@ -21,19 +22,15 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> findById(Long id) {
+    public Optional<Usuario> findById(@NonNull Long id) {
         return usuarioRepository.findById(id);
     }
 
-    public Usuario save(Usuario usuario) {
+    public Usuario save(@NonNull Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(@NonNull Long id) {
         usuarioRepository.deleteById(id);
-    }
-
-    public Optional<Usuario> authenticate(String email, String password) {
-        return usuarioRepository.findByEmailAndPassword(email, password);
     }
 }

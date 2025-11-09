@@ -9,8 +9,7 @@ import sistema.estudantil.system.models.Empresa;
 
 @Repository
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
-    boolean existsByCnpj(String cnpj);
     Optional<Empresa> findByCnpj(String cnpj);
+    boolean existsByCnpj(String cnpj);
     void deleteByCnpj(String cnpj);
-
 }
