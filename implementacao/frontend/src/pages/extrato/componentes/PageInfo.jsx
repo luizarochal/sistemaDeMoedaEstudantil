@@ -49,7 +49,7 @@ export default function PageInfo() {
 						{transactions.map((tx) => (
 							<li key={tx.id} className="flex justify-between p-4 bg-gray-50 rounded-lg shadow-sm">
 								<div>
-									<div className="font-semibold">{tx.type} - {tx.description}</div>
+									<div className="font-semibold text-black">{tx.type} - {tx.description}</div>
 									<div className="text-sm text-gray-500">{formatDate(tx.date)}</div>
 								</div>
 								<div className={`${tx.amount < 0 ? "text-red-600" : "text-green-600"} font-bold`}>

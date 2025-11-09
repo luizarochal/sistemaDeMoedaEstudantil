@@ -70,6 +70,18 @@ html, body {
     
   }
 
+  p{
+    color: #000000;
+  }
+
+  input{
+    background-color: white;
+  }
+
+  select{
+    background-color: white;
+    color: #5e5c5c;
+  }
   @media (prefers-color-scheme: light) {
     :root {
       color: #213547;
