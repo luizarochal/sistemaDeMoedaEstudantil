@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Header() {
   return (
-    <header className="bg-yellow-400 text-white py-4 px-8 shadow-md flex justify-between items-center">
+    <header className="bg-yellow-400 text-purple-700 py-4 px-8 shadow-md flex justify-between items-center">
       <div className="text-2xl font-bold flex items-center gap-2">
        Sistema de Moeda Estudantil
       </div>
