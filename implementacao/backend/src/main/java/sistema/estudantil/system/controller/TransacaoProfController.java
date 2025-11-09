@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class TransacaoProfController {
         @ApiResponse(responseCode = "402", description = "Saldo insuficiente de moedas do professor"),
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
+
+    @SuppressWarnings("null")
     @PostMapping
     public ResponseEntity<TransacaoProf> realizarTransacao(@RequestBody TransacaoRequestDTO request) {
         TransacaoProf transacao = transacaoProfService.realizarTransacao(
@@ -47,7 +50,7 @@ public class TransacaoProfController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<TransacaoProf> obterTransacaoPorId(@PathVariable Long id) {
+    public ResponseEntity<TransacaoProf> obterTransacaoPorId(@PathVariable @NonNull Long id) {
         TransacaoProf transacaoProf = transacaoProfService.obterTransacaoPorId(id);
         return ResponseEntity.ok(transacaoProf);
     }
@@ -94,7 +97,7 @@ public class TransacaoProfController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarTransacao(@PathVariable Long id) {
+    public ResponseEntity<Void> deletarTransacao(@PathVariable @NonNull Long id) {
         transacaoProfService.deletarTransacao(id);
         return ResponseEntity.noContent().build();
     }

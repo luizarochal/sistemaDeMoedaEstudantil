@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.springframework.lang.NonNull;
 import java.util.List;
 
 @RestController
@@ -29,6 +30,8 @@ public class ResgateController {
         @ApiResponse(responseCode = "402", description = "Saldo insuficiente de moedas"),
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
+
+    @SuppressWarnings("null")
     @PostMapping
     public ResponseEntity<Resgate> resgatarVantagem(@RequestBody ResgateRequestDTO request) {
         Resgate resgate = resgateService.resgatarVantagem(request.getAlunoId(), request.getVantagemId());
@@ -66,7 +69,7 @@ public class ResgateController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Resgate> obterResgatePorId(@PathVariable Long id) {
+    public ResponseEntity<Resgate> obterResgatePorId(@PathVariable @NonNull Long id) {
         Resgate resgate = resgateService.obterResgatePorId(id);
         return ResponseEntity.ok(resgate);
     }
@@ -78,7 +81,7 @@ public class ResgateController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}/utilizar")
-    public ResponseEntity<Void> marcarCupomComoUtilizado(@PathVariable Long id) {
+    public ResponseEntity<Void> marcarCupomComoUtilizado(@PathVariable @NonNull Long id) {
         resgateService.marcarCupomComoUtilizado(id);
         return ResponseEntity.noContent().build();
     }

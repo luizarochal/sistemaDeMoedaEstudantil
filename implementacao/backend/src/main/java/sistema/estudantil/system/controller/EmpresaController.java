@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class EmpresaController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{cnpj}")
-    public ResponseEntity<Empresa> getEmpresaByCnpj(@PathVariable String cnpj) {
+    public ResponseEntity<Empresa> getEmpresaByCnpj(@PathVariable @NonNull String cnpj) {
         return empresaService.getEmpresaByCnpj(cnpj)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -71,7 +72,7 @@ public class EmpresaController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{cnpj}")
-    public ResponseEntity<Empresa> updateEmpresa(@PathVariable String cnpj, @RequestBody CriarEmpresaDTO empresaDTO) {
+    public ResponseEntity<Empresa> updateEmpresa(@PathVariable @NonNull String cnpj, @RequestBody CriarEmpresaDTO empresaDTO) {
         try {
             Empresa empresa = new Empresa();
             empresa.setCnpj(empresaDTO.getCnpj());
@@ -93,7 +94,7 @@ public class EmpresaController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{cnpj}")
-    public ResponseEntity<Void> deleteEmpresa(@PathVariable String cnpj) {
+    public ResponseEntity<Void> deleteEmpresa(@PathVariable @NonNull String cnpj) {
         try {
             empresaService.deleteEmpresa(cnpj);
             return ResponseEntity.noContent().build();

@@ -2,6 +2,7 @@ package sistema.estudantil.system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.dtos.CriarUsuarioDTO;
 import sistema.estudantil.system.models.Usuario;
@@ -43,7 +44,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Usuario>> findById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Usuario>> findById(@PathVariable @NonNull Long id) {
         return ResponseEntity.ok(usuarioService.findById(id));
     }
 
@@ -69,7 +70,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable @NonNull Long id) {
         usuarioService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

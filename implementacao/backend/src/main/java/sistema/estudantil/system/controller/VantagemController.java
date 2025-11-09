@@ -2,6 +2,7 @@ package sistema.estudantil.system.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.VantagemService;
 import sistema.estudantil.system.models.Vantagem;
@@ -43,7 +44,7 @@ public class VantagemController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Vantagem> getVantagemById(@PathVariable Long id) {
+    public ResponseEntity<Vantagem> getVantagemById(@PathVariable @NonNull Long id) {
         return vantagemService.getVantagemById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -78,7 +79,7 @@ public class VantagemController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Vantagem> updateVantagem(@PathVariable Long id, @RequestBody Vantagem vantagemDetails) {
+    public ResponseEntity<Vantagem> updateVantagem(@PathVariable @NonNull Long id, @RequestBody Vantagem vantagemDetails) {
         try {
             return ResponseEntity.ok(vantagemService.updateVantagem(id, vantagemDetails));
         } catch (RuntimeException e) {
@@ -93,7 +94,7 @@ public class VantagemController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVantagem(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteVantagem(@PathVariable @NonNull Long id) {
         try {
             vantagemService.deleteVantagem(id);
             return ResponseEntity.noContent().build();

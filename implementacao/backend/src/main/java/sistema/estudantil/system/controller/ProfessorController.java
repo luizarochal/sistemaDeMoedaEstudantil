@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.ProfessorService;
 import sistema.estudantil.system.models.Professor;
+import org.springframework.lang.NonNull;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -41,7 +42,7 @@ public class ProfessorController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Professor> obterProfessorPorId(@PathVariable Long id) {
+    public ResponseEntity<Professor> obterProfessorPorId(@PathVariable @NonNull Long id) {
         Optional<Professor> professor = professorService.buscarProfessorPorId(id);
         return professor.map(ResponseEntity::ok)
                         .orElse(ResponseEntity.notFound().build());
@@ -65,7 +66,7 @@ public class ProfessorController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarProfessor(@PathVariable Long id) {
+    public ResponseEntity<Void> deletarProfessor(@PathVariable @NonNull Long id) {
         professorService.deletarProfessor(id);
         return ResponseEntity.noContent().build();
     }

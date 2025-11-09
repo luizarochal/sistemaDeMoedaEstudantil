@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.lang.NonNull;
 
 import java.util.Optional;
 
@@ -40,7 +41,7 @@ public class AlunoController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Aluno>> getAlunoById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Aluno>> getAlunoById(@PathVariable @NonNull Long id) {
         Optional<Aluno> aluno = alunoService.findById(id);
         return ResponseEntity.ok(aluno);
     }
@@ -53,7 +54,7 @@ public class AlunoController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<Aluno> updateAluno(@PathVariable Long id, @RequestBody Aluno alunoDetails) {
+    public ResponseEntity<Aluno> updateAluno(@PathVariable @NonNull Long id, @RequestBody Aluno alunoDetails) {
         Aluno updatedAluno = alunoService.update(id, alunoDetails);
         return ResponseEntity.ok(updatedAluno);
     }
@@ -65,7 +66,7 @@ public class AlunoController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAluno(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAluno(@PathVariable @NonNull Long id) {
         alunoService.delete(id);
         return ResponseEntity.noContent().build();
     }
