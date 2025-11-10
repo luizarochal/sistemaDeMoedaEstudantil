@@ -83,7 +83,7 @@ export default function PageInfo() {
                   <i className="fa-solid fa-user"></i>
                 </div>
                 <div>
-                  <div className="font-semibold">{u.name}</div>
+                  <div className="font-semibold text-black">{u.name}</div>
                   <div className="text-sm text-gray-500">{u.course} </div>
                   <div className="text-sm text-gray-500"> {u.details}</div>
                 </div>
