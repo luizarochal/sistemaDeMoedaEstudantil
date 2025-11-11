@@ -74,4 +74,15 @@ public class UsuarioController {
         usuarioService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Buscar usuário por email", description = "Retorna um usuário específico pelo seu email")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Optional<Usuario>> findByEmail(@PathVariable @NonNull String email) {
+        return ResponseEntity.ok(usuarioService.findByEmail(email));
+    }
 }

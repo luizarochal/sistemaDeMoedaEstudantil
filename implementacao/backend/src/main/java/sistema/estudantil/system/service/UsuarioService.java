@@ -33,4 +33,8 @@ public class UsuarioService {
     public void deleteById(@NonNull Long id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Optional<Usuario> findByEmail(@NonNull String email) {
+        return usuarioRepository.findByEmail(email);
+    }
 }

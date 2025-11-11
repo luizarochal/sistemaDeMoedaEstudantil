@@ -17,16 +17,16 @@ import java.util.Optional;
 @RequestMapping("/api/alunos")
 @Tag(name = "Alunos", description = "Operações para gerenciamento de alunos")
 public class AlunoController {
-    
+
     @Autowired
     private AlunoService alunoService;
 
     @Operation(summary = "Criar aluno", description = "Cadastra um novo aluno no sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Aluno criado com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
-        @ApiResponse(responseCode = "409", description = "Já existe um aluno com este email"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "200", description = "Aluno criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
+            @ApiResponse(responseCode = "409", description = "Já existe um aluno com este email"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping
     public ResponseEntity<Aluno> createAluno(@RequestBody Aluno aluno) {
@@ -36,9 +36,9 @@ public class AlunoController {
 
     @Operation(summary = "Buscar aluno por ID", description = "Retorna um aluno específico pelo seu ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Aluno encontrado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "200", description = "Aluno encontrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Aluno>> getAlunoById(@PathVariable @NonNull Long id) {
@@ -48,10 +48,10 @@ public class AlunoController {
 
     @Operation(summary = "Atualizar aluno", description = "Atualiza os dados de um aluno existente")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Aluno atualizado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "200", description = "Aluno atualizado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping("/{id}")
     public ResponseEntity<Aluno> updateAluno(@PathVariable @NonNull Long id, @RequestBody Aluno alunoDetails) {
@@ -61,9 +61,9 @@ public class AlunoController {
 
     @Operation(summary = "Deletar aluno", description = "Remove um aluno do sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Aluno deletado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "204", description = "Aluno deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAluno(@PathVariable @NonNull Long id) {
@@ -73,8 +73,8 @@ public class AlunoController {
 
     @Operation(summary = "Listar todos os alunos", description = "Retorna todos os alunos cadastrados no sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de alunos retornada com sucesso"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de alunos retornada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
     public ResponseEntity<java.util.List<Aluno>> getAllAlunos() {

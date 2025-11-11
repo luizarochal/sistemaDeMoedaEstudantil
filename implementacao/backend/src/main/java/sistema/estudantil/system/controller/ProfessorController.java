@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.ProfessorService;
+import sistema.estudantil.system.service.ProfessorTxtService;
 import sistema.estudantil.system.models.Professor;
 import org.springframework.lang.NonNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,40 +21,33 @@ import java.util.Optional;
 @RequestMapping("/api/professores")
 @Tag(name = "Professores", description = "Operações para gerenciamento de professores")
 public class ProfessorController {
-    
+
     @Autowired
     private ProfessorService professorService;
 
-    @Operation(summary = "Criar professor", description = "Cadastra um novo professor no sistema")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Professor criado com sucesso"),
-        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
-        @ApiResponse(responseCode = "409", description = "Já existe um professor com este CPF"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @PostMapping
-    public ResponseEntity<Professor> criarProfessor(@RequestBody Professor professor) {
-        Professor novoProfessor = professorService.salvarProfessor(professor);
-        return ResponseEntity.ok(novoProfessor);
-    }
+    @Autowired
+    private ProfessorTxtService professorTxtService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Operation(summary = "Buscar professor por ID", description = "Retorna um professor específico pelo seu ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Professor encontrado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "200", description = "Professor encontrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
     public ResponseEntity<Professor> obterProfessorPorId(@PathVariable @NonNull Long id) {
         Optional<Professor> professor = professorService.buscarProfessorPorId(id);
         return professor.map(ResponseEntity::ok)
-                        .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Listar todos os professores", description = "Retorna todos os professores cadastrados no sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de professores retornada com sucesso"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "200", description = "Lista de professores retornada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
     public ResponseEntity<List<Professor>> listarTodosProfessores() {
@@ -61,9 +57,9 @@ public class ProfessorController {
 
     @Operation(summary = "Deletar professor", description = "Remove um professor do sistema")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Professor deletado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "204", description = "Professor deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProfessor(@PathVariable @NonNull Long id) {
@@ -71,15 +67,43 @@ public class ProfessorController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Consultar extrato do professor", description = "Retorna o extrato com todas as transações realizadas pelo professor")
+    // Adicione este método no ProfessorController.java
+
+    @Operation(summary = "Processar arquivo TXT", description = "Processa o arquivo TXT de professores manualmente")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Extrato retornado com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Professor não encontrado"),
-        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "200", description = "Arquivo processado com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro ao processar arquivo")
     })
-    @GetMapping("/{id}/extrato")
-    public ResponseEntity<Object> consultarExtrato(@PathVariable Long id) {
-        // Implementação para retornar extrato do professor
-        return ResponseEntity.ok().build();
+    @PostMapping("/processar-txt")
+    public ResponseEntity<String> processarArquivoTxt() {
+        try {
+            String resultado = professorTxtService.processarArquivoManualmente();
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Criar professor", description = "Cadastra um novo professor no sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professor criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos"),
+            @ApiResponse(responseCode = "409", description = "Já existe um professor com este CPF"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @PostMapping
+    public ResponseEntity<Professor> criarProfessor(@RequestBody Professor professor) {
+        try {
+            // 🔑 Criptografar a senha antes de salvar
+            if (professor.getPassword() != null && !professor.getPassword().startsWith("$2a$")) {
+                String senhaCriptografada = passwordEncoder.encode(professor.getPassword());
+                professor.setPassword(senhaCriptografada);
+            }
+
+            Professor novoProfessor = professorService.salvarProfessor(professor);
+            return ResponseEntity.ok(novoProfessor);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
