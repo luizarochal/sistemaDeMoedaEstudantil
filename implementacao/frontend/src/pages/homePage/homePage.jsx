@@ -15,7 +15,7 @@ export default function HomePage() {
     
     if (!token) {
       // Redirecionar para login se não estiver autenticado
-      navigate("/login");
+      navigate("/cadastro");
       return;
     }
     
