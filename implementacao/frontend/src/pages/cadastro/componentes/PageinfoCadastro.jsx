@@ -234,6 +234,16 @@ export default function PageinfoCadastro({ onToggle }) {
             required
             minLength={6}
           />
+          <input 
+            type="password" 
+            name="confirmPassword"
+            placeholder="Confirmar Senha" 
+            className="mb-4 p-2 rounded-md border border-gray-200"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            required
+            minLength={6}
+          />
 
           {renderUserFields()}
         
