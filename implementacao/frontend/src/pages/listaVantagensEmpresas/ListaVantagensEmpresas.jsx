@@ -1,4 +1,4 @@
-import Header from "../welcomePage/coponentes/header.jsx";
+import Header from "../welcomePage/coponentes/Header.jsx";
 import PageInfo from "./componentes/pageInfo.jsx";
 
 export default function ListAlunos() {

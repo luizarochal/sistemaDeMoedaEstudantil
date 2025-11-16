@@ -1,16 +1,12 @@
 import React from "react";
 
 export default function PageinfoEntrar({ onToggle }) {
-  const [userType, setUserType] = React.useState("aluno");
   const [formData, setFormData] = React.useState({
     email: "",
     password: ""
   });
   const [loading, setLoading] = React.useState(false);
 
-  const handleUserTypeChange = (event) => {
-    setUserType(event.target.value);
-  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;

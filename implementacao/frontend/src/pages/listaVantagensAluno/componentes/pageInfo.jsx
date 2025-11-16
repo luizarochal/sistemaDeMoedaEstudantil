@@ -90,7 +90,7 @@ export default function PageInfo({ vantagens = [], loading = false, error = null
                   )}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold mb-2">{vantagem.nome}</h2>
+                  <h2 className="text-2xl text-black font-bold mb-2">{vantagem.nome}</h2>
                   <p className="text-gray-700 mb-1 line-clamp-3 w-80">
                     {vantagem.descricao || "Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem."}
                   </p>

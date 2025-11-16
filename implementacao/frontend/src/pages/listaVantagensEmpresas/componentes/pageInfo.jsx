@@ -57,55 +57,13 @@ export default function PageInfo() {
                           <i className="fas fa-image text-5xl text-gray-500"></i>
                       </div>
                       <div>
-                          <h2 className="text-2xl font-bold mb-2">Nome da Vantagem</h2>
+                          <h2 className="text-2xl font-bold text-black mb-2">Nome da Vantagem</h2>
                           <p className="text-gray-700 mb-1 line-clamp-3 w-80">Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.</p>
                           <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">Custo: 100 Moedas</p>
                       </div>
             </div>
 
-            <div onClick={() => openEdit({ name: 'Nome da Vantagem', description: 'Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.', price: 100 })} className="cursor-pointer flex flex-row items-center p-10 m-5 gap-6 border-x-2 border-y-2 hover:transform hover:scale-105 hover:shadow-lg rounded-lg transition-shadow duration-300">
-                      <div className="flex items-center justify-center !w-52 h-32 bg-gray-200 ">
-                          <i className="fas fa-image text-5xl text-gray-500"></i>
-                      </div>
-                      <div>
-                          <h2 className="text-2xl font-bold mb-2">Nome da Vantagem</h2>
-                          <p className="text-gray-700 mb-1 line-clamp-3 w-80">Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.</p>
-                          <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">Custo: 100 Moedas</p>
-                      </div>
-            </div>
-
-            <div onClick={() => openEdit({ name: 'Nome da Vantagem', description: 'Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.', price: 100 })} className="cursor-pointer flex flex-row items-center p-10 m-5 gap-6 border-x-2 border-y-2 hover:transform hover:scale-105 hover:shadow-lg rounded-lg transition-shadow duration-300">
-                      <div className="flex items-center justify-center !w-52 h-32 bg-gray-200 ">
-                          <i className="fas fa-image text-5xl text-gray-500"></i>
-                      </div>
-                      <div>
-                          <h2 className="text-2xl font-bold mb-2">Nome da Vantagem</h2>
-                          <p className="text-gray-700 mb-1 line-clamp-3 w-80">Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.</p>
-                          <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">Custo: 100 Moedas</p>
-                      </div>
-            </div>
-
-            <div onClick={() => openEdit({ name: 'Nome da Vantagem', description: 'Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.', price: 100 })} className="cursor-pointer flex flex-row items-center p-10 m-5 gap-6 border-x-2 border-y-2 hover:transform hover:scale-105 hover:shadow-lg rounded-lg transition-shadow duration-300">
-                      <div className="flex items-center justify-center !w-52 h-32 bg-gray-200 ">
-                          <i className="fas fa-image text-5xl text-gray-500"></i>
-                      </div>
-                      <div>
-                          <h2 className="text-2xl font-bold mb-2">Nome da Vantagem</h2>
-                          <p className="text-gray-700 mb-1 line-clamp-3 w-80">Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.</p>
-                          <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">Custo: 100 Moedas</p>
-                      </div>
-            </div>
-
-            <div onClick={() => openEdit({ name: 'Nome da Vantagem', description: 'Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.', price: 100 })} className="cursor-pointer flex flex-row items-center p-10 m-5 gap-6 border-x-2 border-y-2 hover:transform hover:scale-105 hover:shadow-lg rounded-lg transition-shadow duration-300">
-                      <div className="flex items-center justify-center !w-52 h-32 bg-gray-200 ">
-                          <i className="fas fa-image text-5xl text-gray-500"></i>
-                      </div>
-                      <div>
-                          <h2 className="text-2xl font-bold mb-2">Nome da Vantagem</h2>
-                          <p className="text-gray-700 mb-1 line-clamp-3 w-80">Descrição detalhada da vantagem oferecida. Inclui todos os benefícios e informações relevantes que o aluno precisa saber antes de resgatar a vantagem.</p>
-                          <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">Custo: 100 Moedas</p>
-                      </div>
-            </div>
+            
 
 
 

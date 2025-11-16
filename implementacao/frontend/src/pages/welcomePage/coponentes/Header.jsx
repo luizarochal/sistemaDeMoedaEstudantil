@@ -33,7 +33,7 @@ export default function Header() {
         </a>
 
         {logado &&(
-          <button onClick={() =>clickSair()}>Sair</button>
+          <button className="bg-white" onClick={() =>clickSair()}>Sair</button>
         )}
         
       </nav>
