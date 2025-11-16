@@ -1,0 +1,6 @@
+# Arquivo de professores - Formato: nome;cpf;email;password;departamento;instituicao
+# Comentários começam com #
+
+João Silva;123.456.789-00;joao.silva@email.com;senha123;Ciência da Computação;Universidade Federal
+Maria Santos;987.654.321-00;maria.santos@email.com;senha456;Matemática;Universidade Estadual
+Pedro Oliveira;111.222.333-44;pedro.oliveira@email.com;senha789;Física;Instituto Federal
