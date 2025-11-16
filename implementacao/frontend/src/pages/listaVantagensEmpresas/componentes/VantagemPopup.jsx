@@ -40,13 +40,26 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
 
   function handleSubmit(e) {
     e.preventDefault();
-    const payload = {
-      name: nome,
-      description: descricao,
-      price: Number.parseInt(preco || 0, 10),
-      image: imageFile,
+
+    // Cria um objeto FormData para enviar arquivos e dados JSON juntos.
+    const formData = new FormData();
+
+    // 1. Anexa os dados da vantagem como um Blob JSON.
+    // O backend espera uma parte chamada "vantagem".
+    const vantagemJson = {
+      nome: nome,
+      descricao: descricao,
+      custo: Number.parseInt(preco || 0, 10),
     };
-    if (onSave) onSave(payload);
+    formData.append('vantagem', new Blob([JSON.stringify(vantagemJson)], { type: 'application/json' }));
+
+    // 2. Anexa o arquivo da imagem, se for um novo arquivo.
+    // O backend espera uma parte chamada "file".
+    if (imageFile && imageFile instanceof File) {
+      formData.append('file', imageFile);
+    }
+
+    if (onSave) onSave(formData);
   }
 
   function handleDelete() {
