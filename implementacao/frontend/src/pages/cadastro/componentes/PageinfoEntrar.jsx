@@ -87,15 +87,7 @@ export default function PageinfoEntrar({ onToggle }) {
         </h1>
         
         <form onSubmit={handleLogin} className="flex flex-col">
-          <select 
-            className="mb-6 p-2 rounded-md border border-gray-200"
-            value={userType}
-            onChange={handleUserTypeChange}
-          >
-            <option value="aluno">Aluno</option>
-            <option value="professor">Professor</option>
-            <option value="empresa">Empresa</option>
-          </select>
+          
 
           <input 
             type="email" 
