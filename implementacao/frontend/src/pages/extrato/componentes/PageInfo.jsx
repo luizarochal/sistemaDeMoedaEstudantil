@@ -164,7 +164,7 @@ export default function PageInfo() {
 	return (
 		<div className="w-full min-h-screen bg-white">
 			{/* Header com informações do usuário */}
-			<div className="bg-purple-600 text-white p-4">
+			<div className="bg-gray-100 text-white p-4">
 				<div className="max-w-4xl mx-auto flex justify-between items-center">
 					<button 
 						type="button" 
@@ -176,9 +176,9 @@ export default function PageInfo() {
 					</button>
 					
 					<div className="text-center">
-						<h1 className="text-2xl font-bold">Extrato</h1>
-						<p className="text-purple-200">{userInfo.nome}</p>
-						<p className="text-purple-200 text-sm">
+						<h1 className="text-2xl text-black font-bold">Extrato</h1>
+						<p className="text-gray-600">{userInfo.nome}</p>
+						<p className="text-gray-600 text-sm">
 							{userInfo.role === "ROLE_PROFESSOR" ? "Professor" : 
 							 userInfo.role === "ROLE_ALUNO" ? "Aluno" : "Usuário"}
 						</p>
@@ -190,9 +190,12 @@ export default function PageInfo() {
 
 			<div className="p-6 max-w-4xl mx-auto">
 				{/* Saldo atual */}
-				<div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-lg shadow-lg mb-6">
-					<h2 className="text-lg font-semibold mb-2">Saldo Atual</h2>
-					<p className="text-3xl font-bold">{userInfo.quantidadeMoedas} moedas</p>
+				<div className="bg-purple-500 text-white p-6 rounded-lg shadow-lg mb-6">
+					<h2 className="text-lg text-purple-100 font-semibold mb-2">Saldo Atual</h2>
+					<div className="flex items-center text-yellow-400">
+					<i className="fa-solid text-2xl fa-coins mr-1"></i>
+					<p className="text-3xl text-yellow-400 font-bold">{userInfo.quantidadeMoedas} moedas</p>
+					</div>
 				</div>
 
 				<h2 className="text-xl font-bold text-purple-700 mb-4">Transações Recentes</h2>

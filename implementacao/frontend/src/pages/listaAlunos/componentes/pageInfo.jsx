@@ -352,7 +352,7 @@ export default function PageInfo() {
                 <button 
                   type="button" 
                   onClick={closeModal} 
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+                  className="px-4 py-2 border bg-gray-100 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
                 >
                   Cancelar
                 </button>
