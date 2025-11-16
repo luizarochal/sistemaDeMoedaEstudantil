@@ -5,11 +5,13 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sistema.estudantil.system.models.TransacaoProf;
+import sistema.estudantil.system.dtos.TransacaoProfDTO;
 import sistema.estudantil.system.models.Aluno;
 import sistema.estudantil.system.models.Professor;
 import sistema.estudantil.system.repositories.TransacaoProfRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransacaoProfService {
@@ -60,25 +62,48 @@ public class TransacaoProfService {
         return transacaoSalva;
     }
 
-    public List<TransacaoProf> listarTodasTransacoes() {
-        return transacaoProfRepository.findAll();
+    public List<TransacaoProfDTO> listarTodasTransacoesDTO() {
+        List<TransacaoProf> transacoes = transacaoProfRepository.findAll();
+        return transacoes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
+
 
     public TransacaoProf obterTransacaoPorId(@NonNull Long id) {
         return transacaoProfRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
     }
 
-    public List<TransacaoProf> listarTransacoesPorProfessor(Long professorId) {
-        return transacaoProfRepository.findByProfessorId(professorId);
+    public List<TransacaoProfDTO> listarTransacoesPorProfessorDTO(Long professorId) {
+        List<TransacaoProf> transacoes = transacaoProfRepository.findByProfessorId(professorId);
+        return transacoes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<TransacaoProf> listarTransacoesPorAluno(Long alunoId) {
-        return transacaoProfRepository.findByAlunoId(alunoId);
+    public List<TransacaoProfDTO> listarTransacoesPorAlunoDTO(Long alunoId) {
+        List<TransacaoProf> transacoes = transacaoProfRepository.findByAlunoId(alunoId);
+        return transacoes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void deletarTransacao(@NonNull Long id) {
         transacaoProfRepository.deleteById(id);
+    }
+
+    private TransacaoProfDTO toDTO(TransacaoProf transacao) {
+        return new TransacaoProfDTO(
+            transacao.getId(),
+            transacao.getProfessor().getId(),
+            transacao.getProfessor().getNome(),
+            transacao.getAluno().getId(),
+            transacao.getAluno().getNome(),
+            transacao.getQuantidadeMoedas(),
+            transacao.getMensagem(),
+            transacao.getDataTransacao()
+        );
     }
 }

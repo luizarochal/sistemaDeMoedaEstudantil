@@ -184,6 +184,7 @@ public class ProfessorTxtService {
         return professor;
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public void processarProfessores(List<Professor> professoresDoArquivo) {
         int criados = 0;

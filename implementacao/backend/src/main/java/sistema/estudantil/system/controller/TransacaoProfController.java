@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.TransacaoProfService;
 import sistema.estudantil.system.models.TransacaoProf;
 import sistema.estudantil.system.dtos.TransacaoRequestDTO;
+import sistema.estudantil.system.dtos.TransacaoProfDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -61,10 +62,11 @@ public class TransacaoProfController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
-    public ResponseEntity<List<TransacaoProf>> listarTodasTransacoes() {
-        List<TransacaoProf> transacoes = transacaoProfService.listarTodasTransacoes();
+    public ResponseEntity<List<TransacaoProfDTO>> listarTodasTransacoes() {
+        List<TransacaoProfDTO> transacoes = transacaoProfService.listarTodasTransacoesDTO();
         return ResponseEntity.ok(transacoes);
     }
+    
 
     @Operation(summary = "Listar transações por professor", description = "Retorna todas as transações realizadas por um professor específico")
     @ApiResponses(value = {
@@ -73,8 +75,8 @@ public class TransacaoProfController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/professor/{professorId}")
-    public ResponseEntity<List<TransacaoProf>> listarTransacoesPorProfessor(@PathVariable Long professorId) {
-        List<TransacaoProf> transacoes = transacaoProfService.listarTransacoesPorProfessor(professorId);
+    public ResponseEntity<List<TransacaoProfDTO>> listarTransacoesPorProfessor(@PathVariable Long professorId) {
+        List<TransacaoProfDTO> transacoes = transacaoProfService.listarTransacoesPorProfessorDTO(professorId);
         return ResponseEntity.ok(transacoes);
     }
 
@@ -85,8 +87,8 @@ public class TransacaoProfController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/aluno/{alunoId}")
-    public ResponseEntity<List<TransacaoProf>> listarTransacoesPorAluno(@PathVariable Long alunoId) {
-        List<TransacaoProf> transacoes = transacaoProfService.listarTransacoesPorAluno(alunoId);
+    public ResponseEntity<List<TransacaoProfDTO>> listarTransacoesPorAluno(@PathVariable Long alunoId) {
+        List<TransacaoProfDTO> transacoes = transacaoProfService.listarTransacoesPorAlunoDTO(alunoId);
         return ResponseEntity.ok(transacoes);
     }
 

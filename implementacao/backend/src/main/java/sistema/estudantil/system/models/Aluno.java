@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "alunos")
 @PrimaryKeyJoinColumn(name = "usuario_id")
@@ -26,9 +28,11 @@ public class Aluno extends Usuario {
     private float quantidadeMoedas = 0;
 
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<TransacaoProf> transacoesRecebidas = new ArrayList<>();
 
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Resgate> resgates = new ArrayList<>();
 
     public Aluno() {

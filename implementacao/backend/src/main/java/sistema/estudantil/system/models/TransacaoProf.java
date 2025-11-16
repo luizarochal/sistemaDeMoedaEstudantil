@@ -3,8 +3,11 @@ package sistema.estudantil.system.models;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "transacoes_prof")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TransacaoProf {
 
     @Id

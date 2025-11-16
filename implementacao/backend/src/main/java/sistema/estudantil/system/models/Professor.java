@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "professores")
 @PrimaryKeyJoinColumn(name = "usuario_id")
@@ -25,6 +27,7 @@ public class Professor extends Usuario {
     private LocalDateTime dataUltimaRecarga;
 
     @OneToMany(mappedBy = "professor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<TransacaoProf> transacoesRealizadas = new ArrayList<>();
 
     public Professor() {
