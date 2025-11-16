@@ -114,6 +114,10 @@ export default function PageInfo() {
         throw new Error(`Saldo insuficiente. Você possui ${professorInfo.quantidadeMoedas} moedas, mas tentou enviar ${value}`);
       }
 
+      if(message===null||message===""){
+        throw new Error("A mensagem (motivo) do envio de moedas é obrigatória.");
+      }
+
       const response = await fetch('http://localhost:8081/api/transacoes-prof', {
         method: 'POST',
         headers: {
@@ -124,7 +128,7 @@ export default function PageInfo() {
           professorId: professorInfo.id,
           alunoId: selectedUser.id,
           quantidadeMoedas: value,
-          mensagem: message || `Recompensa do professor ${professorInfo.nome}`
+          mensagem: message
         }),
       });
 
@@ -332,7 +336,7 @@ export default function PageInfo() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Mensagem (opcional)
+                    Mensagem (obrigatório)
                   </label>
                   <textarea
                     value={message}
