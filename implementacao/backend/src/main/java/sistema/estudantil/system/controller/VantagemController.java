@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.VantagemService;
 import sistema.estudantil.system.models.Vantagem;
+import sistema.estudantil.system.dtos.VantagemDTO; // ← Adicione esta importação
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -44,7 +45,7 @@ public class VantagemController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Vantagem> getVantagemById(@PathVariable @NonNull Long id) {
+    public ResponseEntity<VantagemDTO> getVantagemById(@PathVariable @NonNull Long id) {
         return vantagemService.getVantagemById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -57,7 +58,7 @@ public class VantagemController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/empresa/{cnpj}")
-    public ResponseEntity<List<Vantagem>> getVantagensByEmpresa(@PathVariable String cnpj) {
+    public ResponseEntity<List<VantagemDTO>> getVantagensByEmpresa(@PathVariable String cnpj) {
         return ResponseEntity.ok(vantagemService.getVantagensByEmpresa(cnpj));
     }
 
@@ -67,7 +68,7 @@ public class VantagemController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
-    public ResponseEntity<List<Vantagem>> getAllVantagens() {
+    public ResponseEntity<List<VantagemDTO>> getAllVantagens() {
         return ResponseEntity.ok(vantagemService.getAllVantagens());
     }
 

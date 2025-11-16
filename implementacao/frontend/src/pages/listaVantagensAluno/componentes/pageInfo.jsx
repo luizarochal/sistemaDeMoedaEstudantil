@@ -6,7 +6,7 @@ export default function PageInfo({ vantagens = [], loading = false, error = null
   const handleVantagemClick = (vantagem) => {
     // Aqui você pode implementar a lógica para resgatar a vantagem
     console.log("Vantagem clicada:", vantagem);
-    // navigate(`/vantagem/${vantagem.id}`); // Exemplo de navegação para detalhes
+    // navigate(`/vantagem/${vantagem.idVantagem}`); // Exemplo de navegação para detalhes
   };
 
   if (loading) {
@@ -74,7 +74,7 @@ export default function PageInfo({ vantagens = [], loading = false, error = null
           {vantagens.length > 0 ? (
             vantagens.map((vantagem) => (
               <div 
-                key={vantagem.id}
+                key={vantagem.idVantagem}
                 className="cursor-pointer flex flex-row items-center p-10 m-5 gap-6 border-x-2 border-y-2 hover:transform hover:scale-105 hover:shadow-lg rounded-lg transition-shadow duration-300"
                 onClick={() => handleVantagemClick(vantagem)}
               >
@@ -97,6 +97,12 @@ export default function PageInfo({ vantagens = [], loading = false, error = null
                   <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">
                     Custo: {vantagem.custo || 100} Moedas
                   </p>
+                  {/* Adicione esta linha se quiser mostrar o nome da empresa */}
+                  {vantagem.empresaNome && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      Oferecido por: {vantagem.empresaNome}
+                    </p>
+                  )}
                 </div>
               </div>
             ))

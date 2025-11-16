@@ -7,8 +7,11 @@ import sistema.estudantil.system.repositories.VantagemRepository;
 import sistema.estudantil.system.repositories.EmpresaRepository;
 import sistema.estudantil.system.models.Vantagem;
 import sistema.estudantil.system.models.Empresa;
+import sistema.estudantil.system.dtos.VantagemDTO; // ← Adicione esta importação
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.lang.NonNull;
 
 @Service
@@ -20,30 +23,56 @@ public class VantagemService {
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    // CREATE (Implementa o "cadastrar()" do diagrama)
+    // CREATE
     @Transactional
     public Vantagem createVantagem(String empresaCnpj, Vantagem vantagem) {
         Empresa empresa = empresaRepository.findByCnpj(empresaCnpj)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada com CNPJ: " + empresaCnpj));
 
         vantagem.setEmpresaDono(empresa);
-
         return vantagemRepository.save(vantagem);
     }
 
-    // READ (One)
+    // READ (One) - Retorna DTO
     @Transactional(readOnly = true)
-    public Optional<Vantagem> getVantagemById(@NonNull Long id) {
-        return vantagemRepository.findById(id);
+    public Optional<VantagemDTO> getVantagemById(@NonNull Long id) {
+        return vantagemRepository.findById(id)
+                .map(this::toDTO);
     }
 
-    // READ (All by Empresa)
+    // READ (All by Empresa) - Retorna DTOs
     @Transactional(readOnly = true)
-    public List<Vantagem> getVantagensByEmpresa(String cnpj) {
-        return vantagemRepository.findByEmpresaDonoCnpj(cnpj);
+    public List<VantagemDTO> getVantagensByEmpresa(String cnpj) {
+        List<Vantagem> vantagens = vantagemRepository.findByEmpresaDonoCnpj(cnpj);
+        return vantagens.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
-    // UPDATE
+    // READ (All) - Retorna DTOs
+    @Transactional(readOnly = true)
+    public List<VantagemDTO> getAllVantagens() {
+        List<Vantagem> vantagens = vantagemRepository.findAll();
+        return vantagens.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Método auxiliar para converter Vantagem para VantagemDTO
+    private VantagemDTO toDTO(Vantagem vantagem) {
+        return new VantagemDTO(
+            vantagem.getIdVantagem(),
+            vantagem.getNome(),
+            vantagem.getDescricao(),
+            vantagem.getCusto(),
+            vantagem.getFoto(),
+            vantagem.getCupom(),
+            vantagem.getEmpresaDono() != null ? vantagem.getEmpresaDono().getNome() : null,
+            vantagem.getEmpresaDono() != null ? vantagem.getEmpresaDono().getCnpj() : null
+        );
+    }
+
+    // UPDATE (mantém a entidade para update)
     @Transactional
     public Vantagem updateVantagem(@NonNull Long id, Vantagem vantagemDetails) {
         Vantagem vantagem = vantagemRepository.findById(id)
@@ -68,7 +97,19 @@ public class VantagemService {
     }
 
     @Transactional(readOnly = true)
-    public List<Vantagem> getAllVantagens() {
+    public Optional<Vantagem> getVantagemEntityById(@NonNull Long id) {
+        return vantagemRepository.findById(id);
+    }
+
+    // MÉTODO NOVO: Para obter todas as vantagens como entidades
+    @Transactional(readOnly = true)
+    public List<Vantagem> getAllVantagensEntities() {
         return vantagemRepository.findAll();
+    }
+
+    // MÉTODO NOVO: Para obter vantagens por empresa como entidades
+    @Transactional(readOnly = true)
+    public List<Vantagem> getVantagensByEmpresaEntities(String cnpj) {
+        return vantagemRepository.findByEmpresaDonoCnpj(cnpj);
     }
 }

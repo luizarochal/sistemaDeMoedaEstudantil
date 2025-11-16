@@ -1,5 +1,7 @@
 package sistema.estudantil.system.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity

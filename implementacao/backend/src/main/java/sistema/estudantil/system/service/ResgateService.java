@@ -29,11 +29,12 @@ public class ResgateService {
     private EmailService emailService;
 
     @Transactional
-    public Resgate resgatarVantagem(@NonNull Long alunoId,@NonNull Long vantagemId) {
+    public Resgate resgatarVantagem(@NonNull Long alunoId, @NonNull Long vantagemId) {
         Aluno aluno = alunoService.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + alunoId));
 
-        Vantagem vantagem = vantagemService.getVantagemById(vantagemId)
+        // USAR O NOVO MÉTODO que retorna a entidade Vantagem completa
+        Vantagem vantagem = vantagemService.getVantagemEntityById(vantagemId)
                 .orElseThrow(() -> new RuntimeException("Vantagem não encontrada com ID: " + vantagemId));
 
         // Verificar saldo do aluno
