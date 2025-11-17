@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import sistema.estudantil.system.repositories.EmpresaRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import sistema.estudantil.system.dtos.EmpresaDTO;
 import sistema.estudantil.system.models.Empresa;
 
 @Service
@@ -40,16 +43,16 @@ public class EmpresaService {
         Empresa empresa = empresaRepository.findByCnpj(cnpj)
                 .orElseThrow(() -> new RuntimeException("Empresa não encontrada com CNPJ: " + cnpj));
 
-        if(empresaDetails.getNome() != null){
+        if (empresaDetails.getNome() != null) {
             empresa.setNome(empresaDetails.getNome());
         }
-        if(empresaDetails.getEndereco() != null){
+        if (empresaDetails.getEndereco() != null) {
             empresa.setEndereco(empresaDetails.getEndereco());
         }
-        if(empresaDetails.getPassword() != null){
+        if (empresaDetails.getPassword() != null) {
             empresa.setPassword(empresaDetails.getPassword());
         }
-        if(empresaDetails.getEmail() != null){
+        if (empresaDetails.getEmail() != null) {
             empresa.setEmail(empresaDetails.getEmail());
         }
 
@@ -63,5 +66,27 @@ public class EmpresaService {
             throw new RuntimeException("Empresa não encontrada com CNPJ: " + cnpj);
         }
         empresaRepository.deleteByCnpj(cnpj);
+    }
+
+    private EmpresaDTO toDTO(Empresa empresa) {
+        return new EmpresaDTO(
+                empresa.getNome(),
+                empresa.getEmail(),
+                empresa.getCnpj(),
+                empresa.getEndereco());
+    }
+
+    @Transactional(readOnly = true)
+    public List<EmpresaDTO> getAllEmpresasDTO() {
+        List<Empresa> empresas = empresaRepository.findAll();
+        return empresas.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<EmpresaDTO> getEmpresaByCnpjDTO(String cnpj) {
+        return empresaRepository.findByCnpj(cnpj)
+                .map(this::toDTO);
     }
 }

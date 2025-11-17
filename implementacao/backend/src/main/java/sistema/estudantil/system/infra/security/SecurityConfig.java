@@ -28,6 +28,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/transacoes-prof/**").authenticated()
                         .requestMatchers("/api/usuarios/**").authenticated()
                         .requestMatchers("/api/vantagens/**").authenticated()
+                        .requestMatchers("/api/vantagens/*/imagem").permitAll()
+                        .requestMatchers("/api/vantagens/*/imagem/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
