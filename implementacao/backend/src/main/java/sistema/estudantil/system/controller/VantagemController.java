@@ -7,18 +7,19 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.VantagemService;
 import sistema.estudantil.system.models.Vantagem;
-import sistema.estudantil.system.dtos.VantagemDTO; // ← Adicione esta importação
+import sistema.estudantil.system.dtos.VantagemDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vantagens")
-@CrossOrigin(origins = "*") // Ou "http://localhost:5173" se souber a porta do front
 @Tag(name = "Vantagens", description = "Operações para gerenciamento de vantagens oferecidas pelas empresas")
 public class VantagemController {
 
@@ -33,11 +34,15 @@ public class VantagemController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PostMapping(value = "/empresa/{cnpj}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Vantagem> createVantagem(@PathVariable String cnpj,
+    public ResponseEntity<?> createVantagem(@PathVariable String cnpj,
             @RequestPart("vantagem") Vantagem vantagem,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
             return ResponseEntity.ok(vantagemService.createVantagem(cnpj, vantagem, file));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Erro ao processar imagem: " + e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -85,12 +90,16 @@ public class VantagemController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @PutMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Vantagem> updateVantagem(@PathVariable @NonNull Long id,
+    public ResponseEntity<?> updateVantagem(@PathVariable @NonNull Long id,
             @RequestPart("vantagem") Vantagem vantagemDetails,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
             Vantagem updatedVantagem = vantagemService.updateVantagem(id, vantagemDetails, file);
             return ResponseEntity.ok(updatedVantagem);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Erro ao processar imagem: " + e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -111,4 +120,38 @@ public class VantagemController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Operation(summary = "Obter imagem da vantagem", description = "Retorna a imagem associada a uma vantagem")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Imagem retornada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Vantagem ou imagem não encontrada")
+    })
+    @SuppressWarnings("null")
+
+    @GetMapping("/{id}/imagem")
+    public ResponseEntity<byte[]> getImagemVantagem(@PathVariable Long id) {
+        Optional<Vantagem> opt = vantagemService.getVantagemEntityById(id);
+
+        if (opt.isPresent()) {
+            Vantagem vantagem = opt.get();
+            System.out.println("DEBUG - Processando imagem para vantagem ID: " + id);
+            System.out.println("DEBUG - Dados imagem: "
+                    + (vantagem.getDadosImagem() != null ? vantagem.getDadosImagem().length + " bytes" : "null"));
+            System.out.println("DEBUG - Tipo MIME: " + vantagem.getTipoMime());
+
+            if (vantagem.getDadosImagem() != null && vantagem.getTipoMime() != null) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(vantagem.getTipoMime()))
+                        .header("Cache-Control", "max-age=3600")
+                        .body(vantagem.getDadosImagem());
+            } else {
+                System.out.println("DEBUG - Vantagem sem imagem ou tipo MIME");
+            }
+        } else {
+            System.out.println("DEBUG - Vantagem não encontrada: " + id);
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
 }

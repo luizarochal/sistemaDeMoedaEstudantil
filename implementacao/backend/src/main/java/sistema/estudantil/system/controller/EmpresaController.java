@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.EmpresaService;
 import sistema.estudantil.system.dtos.CriarEmpresaDTO;
+import sistema.estudantil.system.dtos.EmpresaDTO;
 import sistema.estudantil.system.models.Empresa;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -47,8 +48,8 @@ public class EmpresaController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping
-    public ResponseEntity<List<Empresa>> getAllEmpresas() {
-        return ResponseEntity.ok(empresaService.getAllEmpresas());
+    public ResponseEntity<List<EmpresaDTO>> getAllEmpresas() {
+        return ResponseEntity.ok(empresaService.getAllEmpresasDTO());
     }
 
     @Operation(summary = "Buscar empresa por CNPJ", description = "Retorna uma empresa específica pelo seu CNPJ")
@@ -58,8 +59,8 @@ public class EmpresaController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{cnpj}")
-    public ResponseEntity<Empresa> getEmpresaByCnpj(@PathVariable @NonNull String cnpj) {
-        return empresaService.getEmpresaByCnpj(cnpj)
+    public ResponseEntity<EmpresaDTO> getEmpresaByCnpj(@PathVariable @NonNull String cnpj) {
+        return empresaService.getEmpresaByCnpjDTO(cnpj)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
