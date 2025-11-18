@@ -9,9 +9,9 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
   const [preview, setPreview] = useState(null);
   const [imageError, setImageError] = useState(false);
 
-  // Função para obter o token do localStorage
+  
   const getToken = () => {
-    return localStorage.getItem('authToken'); // ou onde você armazena o token
+    return localStorage.getItem('authToken');
   };
 
   useEffect(() => {
@@ -23,12 +23,12 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
       setImageFile(null);
       setImageError(false);
       
-      // Se já existe uma imagem, criar preview a partir do endpoint
+      
       if (initialData.idVantagem) {
         const token = getToken();
         const url = `http://localhost:8081/api/vantagens/${initialData.idVantagem}/imagem?t=${Date.now()}`;
         
-        // Fazer a requisição com o token no header
+        
         fetch(url, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -65,7 +65,7 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
   useEffect(() => {
     if (!imageFile) return;
     
-    if (typeof imageFile === 'string') return; // já é uma URL
+    if (typeof imageFile === 'string') return; 
     
     const reader = new FileReader();
     reader.onload = () => {
@@ -75,7 +75,7 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
     reader.readAsDataURL(imageFile);
   }, [imageFile]);
 
-  // Cleanup para revogar a URL do blob
+  
   useEffect(() => {
     return () => {
       if (preview && preview.startsWith('blob:')) {
@@ -98,7 +98,7 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
     const formData = new FormData();
     const token = getToken();
 
-    // 1. Anexa os dados da vantagem como um Blob JSON
+    
     const vantagemJson = {
       nome: nome,
       descricao: descricao,
@@ -106,19 +106,19 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
       cupom: cupom
     };
     
-    // Para edição, inclui o ID se disponível
+    
     if (mode === 'edit' && initialData && initialData.idVantagem) {
       vantagemJson.idVantagem = initialData.idVantagem;
     }
 
     formData.append('vantagem', new Blob([JSON.stringify(vantagemJson)], { type: 'application/json' }));
 
-    // 2. Anexa o arquivo da imagem, se for um novo arquivo
+    
     if (imageFile && imageFile instanceof File) {
       formData.append('file', imageFile);
     }
 
-    if (onSave) onSave(formData, token); // Passa o token para o onSave
+    if (onSave) onSave(formData, token); 
   }
 
   function handleDelete() {
@@ -130,61 +130,61 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
       <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
 
       <div className="relative bg-white w-11/12 max-w-2xl rounded-lg shadow-lg p-6 z-10">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="text-2xl text-black font-bold mb-4">
           {mode === 'create' ? 'Cadastrar Vantagem' : 'Editar Vantagem'}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-medium mb-1">Nome</label>
+            <label className="block text-black font-medium mb-1">Nome</label>
             <input 
               value={nome} 
               onChange={(e) => setNome(e.target.value)} 
               required 
-              className="w-full border rounded px-3 py-2" 
+              className="w-full text-gray-700 border rounded px-3 py-2" 
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Descrição</label>
+            <label className="block text-black font-medium mb-1">Descrição</label>
             <textarea 
               value={descricao} 
               onChange={(e) => setDescricao(e.target.value)} 
               required 
-              className="w-full border rounded px-3 py-2 h-24" 
+              className="w-full  text-gray-700 border rounded px-3 py-2 h-24" 
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Custo (Moedas)</label>
+            <label className="block text-black font-medium mb-1">Custo (Moedas)</label>
             <input 
               type="number" 
               value={custo} 
               onChange={(e) => setCusto(e.target.value)} 
               required 
-              className="w-40 border rounded px-3 py-2" 
+              className="w-40 text-gray-700 border rounded px-3 py-2" 
               min="0"
-              step="0.01"
+              
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Cupom</label>
+            <label className="block text-black font-medium mb-1">Cupom</label>
             <input 
               value={cupom} 
               onChange={(e) => setCupom(e.target.value)} 
-              className="w-full border rounded px-3 py-2" 
+              className="w-full text-gray-700 border rounded px-3 py-2" 
               placeholder="Código do cupom (opcional)"
             />
           </div>
 
           <div>
-            <label className="block font-medium mb-1">Imagem</label>
+            <label className="block text-black font-medium mb-1">Imagem</label>
             <input 
               type="file" 
               accept="image/jpeg,image/png,image/webp" 
               onChange={handleFileChange} 
-              className="w-full" 
+              className="w-full text-gray-700" 
             />
             <p className="text-sm text-gray-500 mt-1">
               Formatos suportados: JPEG, PNG, WebP (máx. 10MB)
@@ -215,7 +215,7 @@ export default function VantagemPopup({ isOpen, mode = 'create', initialData = n
             <button 
               type="button" 
               onClick={onClose} 
-              className="px-4 py-2 rounded border hover:bg-gray-100"
+              className="px-4 py-2 rounded border text-black bg-gray-100 hover:bg-gray-200 hover:text-black"
             >
               Cancelar
             </button>

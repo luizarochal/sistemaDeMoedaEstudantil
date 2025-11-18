@@ -238,15 +238,15 @@ export default function PageInfo({ vantagens = [], loading = false, error = null
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-6 justify-center overflow-y-auto">
+        <div className="flex flex-wrap gap-6 justify-center overflow-y-auto w-full h-[calc(100vh-5rem)]">
           {vantagens.length > 0 ? (
             vantagens.map((vantagem) => (
               <div 
                 key={vantagem.idVantagem}
                 onClick={() => openEdit(vantagem)} 
-                className="cursor-pointer flex flex-row items-center p-10 m-5 gap-6 border-x-2 border-y-2 hover:transform hover:scale-105 hover:shadow-lg rounded-lg transition-shadow duration-300"
+                className="cursor-pointer flex flex-row max-h-52 p-4 md:p-6 lg:p-10 m-3 md:m-1 gap-4 md:gap-2 border-x-2 border-y-2 hover:transform hover:scale-105 hover:shadow-lg rounded-lg transition-shadow duration-300"
               >
-                <div className="flex items-center justify-center !w-52 h-32 bg-gray-200 rounded">
+                <div className="flex items-center justify-center w-40 md:!w-52 h-24 md:h-32 bg-gray-200 rounded">
                   {imageUrls[vantagem.idVantagem] ? (
                     <img 
                       src={imageUrls[vantagem.idVantagem]} 
@@ -264,9 +264,9 @@ export default function PageInfo({ vantagens = [], loading = false, error = null
                     </div>
                   )}
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h2 className="text-2xl font-bold text-black mb-2">{vantagem.nome}</h2>
-                  <p className="text-gray-700 mb-1 line-clamp-3 w-80">{vantagem.descricao}</p>
+                  <p className="text-gray-700 mb-1 line-clamp-3 w-64 md:w-80">{vantagem.descricao}</p>
                   <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">
                     Custo: {vantagem.custo} Moedas
                   </p>
