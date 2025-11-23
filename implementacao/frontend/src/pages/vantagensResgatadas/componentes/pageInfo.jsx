@@ -108,7 +108,7 @@ export default function PageInfo({
         </button>
 
         <div className="pt-20 px-5">
-          <h3 className="text-4xl font-bold">Vantagens</h3>
+          <h3 className="text-4xl font-bold">Vantagens já resgatadas</h3>
           <div className="flex justify-center items-center h-64">
             <p className="text-xl text-gray-600">Carregando vantagens...</p>
           </div>
@@ -129,7 +129,7 @@ export default function PageInfo({
         </button>
 
         <div className="pt-20 px-5">
-          <h3 className="text-4xl font-bold">Vantagens</h3>
+          <h3 className="text-4xl font-bold">Vantagens já resgatadas</h3>
           <div className="flex flex-col justify-center items-center h-64">
             <p className="text-xl text-red-600 mb-4">{error}</p>
             <button
@@ -155,7 +155,7 @@ export default function PageInfo({
       </button>
 
       <div className="pt-20 px-5">
-        <h3 className="text-4xl font-bold">Vantagens</h3>
+        <h3 className="text-4xl font-bold">Vantagens já resgatadas</h3>
 
         <div className="flex flex-wrap gap-6 justify-center overflow-y-auto">
           {vantagens.length > 0 ? (
@@ -205,10 +205,6 @@ export default function PageInfo({
                     </p>
                   )}
                 </div>
-                <button className="ml-auto self-center mt-auto bg-yellow-500 text-white px-3 py-2 rounded flex items-center hover:bg-purple-700 transition">
-                  <i className="fa-solid fa-arrow-right-arrow-left mr-2"></i>
-                  Resgatar
-                </button>
               </div>
             ))
           ) : (

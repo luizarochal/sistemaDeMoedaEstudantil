@@ -9,6 +9,7 @@ import Extrato from './pages/extrato/extratos.jsx'
 import ListaAlunos from './pages/listaAlunos/ListAlunos.jsx'
 import ListaVantagensAluno from './pages/listaVantagensAluno/ListaVantagensAluno.jsx'
 import ListaVantagensEmpresas from './pages/listaVantagensEmpresas/ListaVantagensEmpresas.jsx'
+import VantagensResgatadas from './pages/vantagensResgatadas/VantagensResgatadas.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/listaAlunos" element={<ListaAlunos />} />
         <Route path="/listaVantagensAluno" element={<ListaVantagensAluno />} />
         <Route path="/listaVantagensEmpresas" element={<ListaVantagensEmpresas />} />
+        <Route path="/vantagensResgatadas" element={<VantagensResgatadas />} />
 
       </Routes>
     </BrowserRouter>
