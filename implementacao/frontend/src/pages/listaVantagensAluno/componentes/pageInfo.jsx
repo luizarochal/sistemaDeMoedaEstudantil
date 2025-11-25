@@ -9,11 +9,59 @@ export default function PageInfo({
 }) {
   const navigate = useNavigate();
   const [imageUrls, setImageUrls] = useState({});
+  const [resgatando, setResgatando] = useState({});
+  const [alunoInfo, setAlunoInfo] = useState({
+    id: null,
+    nome: "",
+    email: "",
+    quantidadeMoedas: 0
+  });
+
+  // Buscar informações do aluno como no PageInfo de extrato
+  useEffect(() => {
+    loadUserInfo();
+  }, []);
+
+  async function loadUserInfo() {
+    try {
+      const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+      const email = localStorage.getItem("userEmail") || sessionStorage.getItem("userEmail");
+      
+      if (!token || !email) {
+        throw new Error("Usuário não autenticado");
+      }
+
+      // Buscar informações completas do usuário
+      const userResponse = await fetch(`http://localhost:8081/api/usuarios/email/${email}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!userResponse.ok) {
+        throw new Error("Erro ao buscar informações do usuário");
+      }
+
+      const userData = await userResponse.json();
+      
+      setAlunoInfo({
+        id: userData.id,
+        nome: userData.nome || "Aluno",
+        email: userData.email || "",
+        quantidadeMoedas: userData.quantidadeMoedas || 0
+      });
+
+    } catch (err) {
+      console.error("Erro ao carregar informações do usuário:", err);
+    }
+  }
 
   // Função para carregar imagem com token
   const loadImageWithToken = async (vantagemId) => {
     try {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
       if (!token) {
         console.log("Token não encontrado");
         return null;
@@ -46,8 +94,90 @@ export default function PageInfo({
     }
   };
 
+  // Função para resgatar vantagem
+  const handleResgatarVantagem = async (vantagem) => {
+    if (!alunoInfo.id) {
+      alert("Erro: ID do aluno não encontrado. Faça login novamente.");
+      return;
+    }
+
+    if (resgatando[vantagem.idVantagem]) return;
+
+    setResgatando(prev => ({ ...prev, [vantagem.idVantagem]: true }));
+
+    try {
+      const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+      if (!token) {
+        alert("Usuário não autenticado");
+        return;
+      }
+
+      // Verificar saldo antes de confirmar
+      if (alunoInfo.quantidadeMoedas < vantagem.custo) {
+        alert(`Saldo insuficiente! Você possui ${alunoInfo.quantidadeMoedas} moedas, mas a vantagem custa ${vantagem.custo} moedas.`);
+        setResgatando(prev => ({ ...prev, [vantagem.idVantagem]: false }));
+        return;
+      }
+
+      // Confirmar resgate
+      const confirmar = window.confirm(
+        `Deseja resgatar a vantagem "${vantagem.nome}" por ${vantagem.custo} moedas?\nSeu saldo atual: ${alunoInfo.quantidadeMoedas} moedas`
+      );
+
+      if (!confirmar) {
+        setResgatando(prev => ({ ...prev, [vantagem.idVantagem]: false }));
+        return;
+      }
+
+      const resgateRequest = {
+        alunoId: alunoInfo.id,
+        vantagemId: vantagem.idVantagem
+      };
+
+      console.log("Enviando requisição de resgate:", resgateRequest);
+
+      const response = await fetch("http://localhost:8081/api/resgates", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(resgateRequest),
+      });
+
+      if (response.ok) {
+        const resgate = await response.json();
+        alert(`✅ Vantagem resgatada com sucesso!\n🎫 Cupom: ${resgate.codigoCupom}\n📧 Verifique seu email para mais detalhes.`);
+        
+        // Atualizar saldo localmente
+        setAlunoInfo(prev => ({
+          ...prev,
+          quantidadeMoedas: prev.quantidadeMoedas - vantagem.custo
+        }));
+        
+        // Atualizar a lista de vantagens se necessário
+        if (onRefresh) onRefresh();
+      } else {
+        const errorText = await response.text();
+        console.error("Erro no resgate:", errorText);
+        
+        if (response.status === 402) {
+          alert("Saldo insuficiente de moedas para resgatar esta vantagem.");
+        } else if (response.status === 404) {
+          alert("Vantagem ou aluno não encontrado.");
+        } else {
+          alert(`Erro ao resgatar vantagem: ${errorText}`);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao resgatar vantagem:", error);
+      alert("Erro de conexão ao tentar resgatar a vantagem.");
+    } finally {
+      setResgatando(prev => ({ ...prev, [vantagem.idVantagem]: false }));
+    }
+  };
+
   // Carregar imagens quando as vantagens mudarem
-  // Substitua o primeiro useEffect por este:
   useEffect(() => {
     const loadImages = async () => {
       if (vantagens.length === 0) return;
@@ -61,7 +191,6 @@ export default function PageInfo({
 
       for (const vantagem of vantagens) {
         if (vantagem.idVantagem) {
-          // Verifica se já existe no estado atual sem depender do imageUrls
           const imageUrl = await loadImageWithToken(vantagem.idVantagem);
           if (imageUrl) {
             newImageUrls[vantagem.idVantagem] = imageUrl;
@@ -75,11 +204,11 @@ export default function PageInfo({
     };
 
     loadImages();
-  }, [vantagens]); // ✅ Apenas vantagens como dependência
+  }, [vantagens]);
 
   // Cleanup function para revogar URLs
   useEffect(() => {
-    const currentImageUrls = imageUrls; // Captura o valor atual
+    const currentImageUrls = imageUrls;
 
     return () => {
       Object.values(currentImageUrls).forEach((url) => {
@@ -88,12 +217,10 @@ export default function PageInfo({
         }
       });
     };
-  }, [imageUrls]); // ✅ Agora depende de imageUrls
+  }, [imageUrls]);
 
   const handleVantagemClick = (vantagem) => {
-    // Aqui você pode implementar a lógica para resgatar a vantagem
     console.log("Vantagem clicada:", vantagem);
-    // navigate(`/vantagem/${vantagem.idVantagem}`); // Exemplo de navegação para detalhes
   };
 
   if (loading) {
@@ -155,7 +282,17 @@ export default function PageInfo({
       </button>
 
       <div className="pt-20 px-5">
-        <h3 className="text-4xl font-bold">Vantagens</h3>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-4xl font-bold">Vantagens Disponíveis</h3>
+          {alunoInfo.id && (
+            <div className="bg-purple-500 text-white p-3 rounded-lg">
+              <div className="flex items-center">
+                <i className="fa-solid fa-coins text-yellow-400 mr-2"></i>
+                <span className="font-semibold">Saldo: {alunoInfo.quantidadeMoedas} moedas</span>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-6 justify-center overflow-y-auto">
           {vantagens.length > 0 ? (
@@ -198,16 +335,43 @@ export default function PageInfo({
                   <p className="text-lg font-semibold bg-purple-500 w-fit px-2 rounded text-white">
                     Custo: {vantagem.custo || 100} Moedas
                   </p>
-                  {/* Adicione esta linha se quiser mostrar o nome da empresa */}
                   {vantagem.empresaNome && (
                     <p className="text-sm text-gray-600 mt-1">
                       Oferecido por: {vantagem.empresaNome}
                     </p>
                   )}
                 </div>
-                <button className="ml-auto self-center mt-auto bg-yellow-500 text-white px-3 py-2 rounded flex items-center hover:bg-purple-700 transition">
-                  <i className="fa-solid fa-arrow-right-arrow-left mr-2"></i>
-                  Resgatar
+                <button 
+                  className={`ml-auto self-center mt-auto px-3 py-2 rounded flex items-center transition ${
+                    resgatando[vantagem.idVantagem] 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : alunoInfo.quantidadeMoedas < vantagem.custo
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleResgatarVantagem(vantagem);
+                  }}
+                  disabled={resgatando[vantagem.idVantagem] || alunoInfo.quantidadeMoedas < vantagem.custo}
+                  title={alunoInfo.quantidadeMoedas < vantagem.custo ? "Saldo insuficiente" : "Resgatar vantagem"}
+                >
+                  {resgatando[vantagem.idVantagem] ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin mr-2"></i>
+                      Resgatando...
+                    </>
+                  ) : alunoInfo.quantidadeMoedas < vantagem.custo ? (
+                    <>
+                      <i className="fa-solid fa-lock mr-2"></i>
+                      Saldo Insuficiente
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-arrow-right-arrow-left mr-2"></i>
+                      Resgatar
+                    </>
+                  )}
                 </button>
               </div>
             ))

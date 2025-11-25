@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import sistema.estudantil.system.service.ResgateService;
 import sistema.estudantil.system.models.Resgate;
 import sistema.estudantil.system.dtos.ResgateRequestDTO;
+import sistema.estudantil.system.dtos.ResgateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +23,7 @@ public class ResgateController {
     @Autowired
     private ResgateService resgateService;
 
+    @SuppressWarnings("null")
     @Operation(summary = "Resgatar vantagem", description = "Realiza o resgate de uma vantagem por um aluno, gerando um cupom e enviando emails de confirmação")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Vantagem resgatada com sucesso"),
@@ -30,8 +32,6 @@ public class ResgateController {
         @ApiResponse(responseCode = "402", description = "Saldo insuficiente de moedas"),
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
-
-    @SuppressWarnings("null")
     @PostMapping
     public ResponseEntity<Resgate> resgatarVantagem(@RequestBody ResgateRequestDTO request) {
         Resgate resgate = resgateService.resgatarVantagem(request.getAlunoId(), request.getVantagemId());
@@ -45,8 +45,8 @@ public class ResgateController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/aluno/{alunoId}")
-    public ResponseEntity<List<Resgate>> listarResgatesPorAluno(@PathVariable Long alunoId) {
-        List<Resgate> resgates = resgateService.listarResgatesPorAluno(alunoId);
+    public ResponseEntity<List<ResgateDTO>> listarResgatesPorAluno(@PathVariable Long alunoId) {
+        List<ResgateDTO> resgates = resgateService.listarResgatesPorAluno(alunoId);
         return ResponseEntity.ok(resgates);
     }
 
@@ -57,8 +57,8 @@ public class ResgateController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/empresa/{cnpj}")
-    public ResponseEntity<List<Resgate>> listarResgatesPorEmpresa(@PathVariable String cnpj) {
-        List<Resgate> resgates = resgateService.listarResgatesPorEmpresa(cnpj);
+    public ResponseEntity<List<ResgateDTO>> listarResgatesPorEmpresa(@PathVariable String cnpj) {
+        List<ResgateDTO> resgates = resgateService.listarResgatesPorEmpresa(cnpj);
         return ResponseEntity.ok(resgates);
     }
 
@@ -69,8 +69,8 @@ public class ResgateController {
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Resgate> obterResgatePorId(@PathVariable @NonNull Long id) {
-        Resgate resgate = resgateService.obterResgatePorId(id);
+    public ResponseEntity<ResgateDTO> obterResgatePorId(@PathVariable @NonNull Long id) {
+        ResgateDTO resgate = resgateService.obterResgatePorId(id);
         return ResponseEntity.ok(resgate);
     }
 
