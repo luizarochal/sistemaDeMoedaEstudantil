@@ -10,6 +10,7 @@ import sistema.estudantil.system.models.Vantagem;
 import sistema.estudantil.system.models.Empresa;
 import sistema.estudantil.system.repositories.ResgateRepository;
 import sistema.estudantil.system.dtos.ResgateDTO;
+import sistema.estudantil.system.dtos.TransacaoResgateDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +30,9 @@ public class ResgateService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private TransacaoResgateService transacaoResgateService; // Novo serviço
 
     @Transactional
     public Resgate resgatarVantagem(@NonNull Long alunoId, @NonNull Long vantagemId) {
@@ -59,6 +63,16 @@ public class ResgateService {
         // Salvar resgate
         Resgate resgateSalvo = resgateRepository.save(resgate);
 
+        // Criar transação de resgate para o extrato
+        transacaoResgateService.registrarTransacaoResgate(
+            alunoId,
+            aluno.getNome(),
+            vantagemId,
+            vantagem.getNome(),
+            vantagem.getCusto(),
+            codigoCupom
+        );
+
         // Enviar emails
         Empresa empresa = vantagem.getEmpresaDono();
         emailService.enviarEmailCupomAluno(aluno.getEmail(), vantagem, codigoCupom);
@@ -67,6 +81,7 @@ public class ResgateService {
         return resgateSalvo;
     }
 
+    // ... restante do código permanece igual
     @Transactional(readOnly = true)
     public List<ResgateDTO> listarResgatesPorAluno(Long alunoId) {
         List<Resgate> resgates = resgateRepository.findByAlunoId(alunoId);
