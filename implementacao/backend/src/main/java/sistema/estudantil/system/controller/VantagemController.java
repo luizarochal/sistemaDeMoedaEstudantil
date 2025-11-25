@@ -134,10 +134,6 @@ public class VantagemController {
 
         if (opt.isPresent()) {
             Vantagem vantagem = opt.get();
-            System.out.println("DEBUG - Processando imagem para vantagem ID: " + id);
-            System.out.println("DEBUG - Dados imagem: "
-                    + (vantagem.getDadosImagem() != null ? vantagem.getDadosImagem().length + " bytes" : "null"));
-            System.out.println("DEBUG - Tipo MIME: " + vantagem.getTipoMime());
 
             if (vantagem.getDadosImagem() != null && vantagem.getTipoMime() != null) {
                 return ResponseEntity.ok()
@@ -152,6 +148,12 @@ public class VantagemController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @SuppressWarnings("null")
+    @GetMapping("/sem-resgates")
+    public ResponseEntity<List<VantagemDTO>> getVantagensSemResgates() {
+        return ResponseEntity.ok(vantagemService.getVantagensSemResgates());
     }
 
 }

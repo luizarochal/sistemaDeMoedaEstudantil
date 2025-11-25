@@ -16,4 +16,8 @@ public interface VantagemRepository extends JpaRepository<Vantagem, Long> {
      // Método customizado para carregar imagem
     @Query("SELECT v FROM Vantagem v LEFT JOIN FETCH v.empresaDono WHERE v.idVantagem = :id")
     Optional<Vantagem> findByIdWithImage(@Param("id") Long id);
+
+    //metodo para buscar vanategns que ainda não houveram resgates
+    @Query("SELECT v FROM Vantagem v WHERE v.idVantagem NOT IN (SELECT r.vantagem.idVantagem FROM Resgate r)")
+    List<Vantagem> findVantagensSemResgates();
 }

@@ -9,9 +9,11 @@ import sistema.estudantil.system.models.Aluno;
 import sistema.estudantil.system.models.Vantagem;
 import sistema.estudantil.system.models.Empresa;
 import sistema.estudantil.system.repositories.ResgateRepository;
+import sistema.estudantil.system.dtos.ResgateDTO;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ResgateService {
@@ -33,7 +35,6 @@ public class ResgateService {
         Aluno aluno = alunoService.findById(alunoId)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + alunoId));
 
-        // USAR O NOVO MÉTODO que retorna a entidade Vantagem completa
         Vantagem vantagem = vantagemService.getVantagemEntityById(vantagemId)
                 .orElseThrow(() -> new RuntimeException("Vantagem não encontrada com ID: " + vantagemId));
 
@@ -66,12 +67,20 @@ public class ResgateService {
         return resgateSalvo;
     }
 
-    public List<Resgate> listarResgatesPorAluno(Long alunoId) {
-        return resgateRepository.findByAlunoId(alunoId);
+    @Transactional(readOnly = true)
+    public List<ResgateDTO> listarResgatesPorAluno(Long alunoId) {
+        List<Resgate> resgates = resgateRepository.findByAlunoId(alunoId);
+        return resgates.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Resgate> listarResgatesPorEmpresa(String cnpj) {
-        return resgateRepository.findByVantagemEmpresaDonoCnpj(cnpj);
+    @Transactional(readOnly = true)
+    public List<ResgateDTO> listarResgatesPorEmpresa(String cnpj) {
+        List<Resgate> resgates = resgateRepository.findByVantagemEmpresaDonoCnpj(cnpj);
+        return resgates.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -83,9 +92,29 @@ public class ResgateService {
         resgateRepository.save(resgate);
     }
 
-    public Resgate obterResgatePorId(@NonNull Long id) {
-        return resgateRepository.findById(id)
+    @Transactional(readOnly = true)
+    public ResgateDTO obterResgatePorId(@NonNull Long id) {
+        Resgate resgate = resgateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resgate não encontrado com ID: " + id));
+        return toDTO(resgate);
+    }
+
+    // Método para converter Resgate para ResgateDTO
+    private ResgateDTO toDTO(Resgate resgate) {
+        return new ResgateDTO(
+                resgate.getId(),
+                resgate.getAluno() != null ? resgate.getAluno().getId() : null,
+                resgate.getAluno() != null ? resgate.getAluno().getNome() : null,
+                resgate.getVantagem() != null ? resgate.getVantagem().getIdVantagem() : null,
+                resgate.getVantagem() != null ? resgate.getVantagem().getNome() : null,
+                resgate.getVantagem() != null ? resgate.getVantagem().getDescricao() : null,
+                resgate.getVantagem() != null ? resgate.getVantagem().getCusto() : null,
+                resgate.getVantagem() != null && resgate.getVantagem().getEmpresaDono() != null 
+                    ? resgate.getVantagem().getEmpresaDono().getNome() : null,
+                resgate.getCodigoCupom(),
+                resgate.getDataResgate(),
+                resgate.isUtilizado()
+        );
     }
 
     private String gerarCodigoCupom() {

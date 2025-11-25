@@ -172,4 +172,12 @@ public class VantagemService {
     public List<Vantagem> getVantagensByEmpresaEntities(String cnpj) {
         return vantagemRepository.findByEmpresaDonoCnpj(cnpj);
     }
+
+    @Transactional(readOnly = true)
+    public List<VantagemDTO> getVantagensSemResgates() {
+        List<Vantagem> vantagens = vantagemRepository.findVantagensSemResgates();
+        return vantagens.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
 }

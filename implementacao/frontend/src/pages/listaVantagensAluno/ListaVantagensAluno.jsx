@@ -13,14 +13,14 @@ export default function ListAlunos() {
 
   const fetchVantagens = async () => {
     try {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
       if (!token) {
         setError("Usuário não autenticado");
         setLoading(false);
         return;
       }
 
-      const response = await fetch("http://localhost:8081/api/vantagens", {
+      const response = await fetch("http://localhost:8081/api/vantagens/sem-resgates", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -42,10 +42,21 @@ export default function ListAlunos() {
     }
   };
 
+  const refreshVantagens = () => {
+    setLoading(true);
+    setError(null);
+    fetchVantagens();
+  };
+
   return (
     <div className="bg-purple-400 min-h-screen">
       <Header />
-      <PageInfo vantagens={vantagens} loading={loading} error={error} onRefresh={fetchVantagens} />
+      <PageInfo 
+        vantagens={vantagens} 
+        loading={loading} 
+        error={error} 
+        onRefresh={refreshVantagens} 
+      />
     </div>
   );
 }
