@@ -94,6 +94,48 @@ export default function PageInfo({
     }
   };
 
+  // Função para criar transação de resgate
+  const criarTransacaoResgate = async (vantagem, codigoCupom) => {
+    try {
+      const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+      if (!token) {
+        console.error("Token não encontrado para criar transação");
+        return false;
+      }
+
+      const transacaoData = {
+        alunoId: alunoInfo.id,
+        alunoNome: alunoInfo.nome,
+        vantagemId: vantagem.idVantagem,
+        vantagemNome: vantagem.nome,
+        custoMoedas: vantagem.custo,
+        codigoCupom: codigoCupom
+      };
+
+      console.log("Criando transação de resgate:", transacaoData);
+
+      const response = await fetch("http://localhost:8081/api/transacoes-resgate", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(transacaoData),
+      });
+
+      if (response.ok) {
+        console.log("Transação de resgate criada com sucesso");
+        return true;
+      } else {
+        console.error("Erro ao criar transação de resgate:", response.status);
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro ao criar transação de resgate:", error);
+      return false;
+    }
+  };
+
   // Função para resgatar vantagem
   const handleResgatarVantagem = async (vantagem) => {
     if (!alunoInfo.id) {
@@ -136,6 +178,7 @@ export default function PageInfo({
 
       console.log("Enviando requisição de resgate:", resgateRequest);
 
+      // 1. Primeiro, fazer o resgate
       const response = await fetch("http://localhost:8081/api/resgates", {
         method: "POST",
         headers: {
@@ -147,7 +190,15 @@ export default function PageInfo({
 
       if (response.ok) {
         const resgate = await response.json();
-        alert(`✅ Vantagem resgatada com sucesso!\n🎫 Cupom: ${resgate.codigoCupom}\n📧 Verifique seu email para mais detalhes.`);
+        
+        // 2. Depois do resgate bem-sucedido, criar a transação
+        const transacaoCriada = await criarTransacaoResgate(vantagem, resgate.codigoCupom);
+        
+        if (transacaoCriada) {
+          alert(`✅ Vantagem resgatada com sucesso!\n🎫 Cupom: ${resgate.codigoCupom}\n📧 Verifique seu email para mais detalhes.`);
+        } else {
+          alert(`✅ Vantagem resgatada com sucesso!\n🎫 Cupom: ${resgate.codigoCupom}\n⚠️ Erro ao registrar transação no extrato.`);
+        }
         
         // Atualizar saldo localmente
         setAlunoInfo(prev => ({
