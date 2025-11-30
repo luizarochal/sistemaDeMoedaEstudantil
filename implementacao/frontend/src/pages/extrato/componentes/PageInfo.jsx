@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function PageInfo() {
 	const [transactions, setTransactions] = useState([]);
+	const [resgateTransactions, setResgateTransactions] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [userInfo, setUserInfo] = useState({
@@ -13,11 +14,82 @@ export default function PageInfo() {
 	});
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		loadUserInfo();
+	const fetchExtrato = useCallback(async (userId, userRole, token) => {
+		try {
+			let apiUrl = "";
+
+			if (userRole === "ROLE_PROFESSOR") {
+				apiUrl = `http://localhost:8081/api/transacoes-prof/professor/${userId}`;
+			} else if (userRole === "ROLE_ALUNO") {
+				apiUrl = `http://localhost:8081/api/transacoes-prof/aluno/${userId}`;
+			} else {
+				setTransactions([]);
+				return;
+			}
+
+			console.log("Buscando extrato na URL:", apiUrl);
+
+			const response = await fetch(apiUrl, {
+				method: "GET",
+				headers: {
+					"Authorization": `Bearer ${token}`,
+					"Content-Type": "application/json"
+				}
+			});
+
+			console.log("Status da resposta:", response.status);
+
+			if (!response.ok) {
+				if (response.status === 403) {
+					throw new Error("Acesso negado. Verifique suas permissões.");
+				} else if (response.status === 401) {
+					throw new Error("Token expirado ou inválido");
+				} else if (response.status === 404) {
+					// Nenhuma transação encontrada - não é um erro
+					setTransactions([]);
+					return;
+				}
+				throw new Error(`Erro ao carregar extrato: ${response.status}`);
+			}
+
+			const data = await response.json();
+			console.log("Transações recebidas:", data);
+			setTransactions(data);
+
+		} catch (err) {
+			console.error("Erro ao buscar extrato:", err);
+			// Não setar erro aqui para não bloquear o carregamento das transações de resgate
+		}
 	}, []);
 
-	async function loadUserInfo() {
+	const fetchResgateTransactions = useCallback(async (userId, userRole, token) => {
+		try {
+			// Buscar transações de resgate (apenas para alunos)
+			if (userRole === "ROLE_ALUNO") {
+				const response = await fetch(`http://localhost:8081/api/transacoes-resgate/aluno/${userId}`, {
+					method: "GET",
+					headers: {
+						"Authorization": `Bearer ${token}`,
+						"Content-Type": "application/json"
+					}
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					console.log("Transações de resgate recebidas:", data);
+					setResgateTransactions(data);
+				} else if (response.status !== 404) {
+					console.error("Erro ao buscar transações de resgate:", response.status);
+				}
+			}
+		} catch (err) {
+			console.error("Erro ao buscar transações de resgate:", err);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
+
+	const loadUserInfo = useCallback(async () => {
 		try {
 			const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 			const email = localStorage.getItem("userEmail") || sessionStorage.getItem("userEmail");
@@ -48,9 +120,12 @@ export default function PageInfo() {
 				userId: userData.id
 			});
 
-			// Buscar extrato após obter o ID do usuário
+			// Buscar extratos após obter o ID do usuário
 			if (userData.id) {
-				await fetchExtrato(userData.id, userData.role, token);
+				await Promise.all([
+					fetchExtrato(userData.id, userData.role, token),
+					fetchResgateTransactions(userData.id, userData.role, token)
+				]);
 			} else {
 				throw new Error("ID do usuário não encontrado");
 			}
@@ -60,59 +135,11 @@ export default function PageInfo() {
 			setError(err.message);
 			setLoading(false);
 		}
-	}
+	}, [fetchExtrato, fetchResgateTransactions]);
 
-	async function fetchExtrato(userId, userRole, token) {
-		try {
-			let apiUrl = "";
-
-			if (userRole === "ROLE_PROFESSOR") {
-				apiUrl = `http://localhost:8081/api/transacoes-prof/professor/${userId}`;
-			} else if (userRole === "ROLE_ALUNO") {
-				apiUrl = `http://localhost:8081/api/transacoes-prof/aluno/${userId}`;
-			} else {
-				setError("Extrato não disponível para este tipo de usuário");
-				setLoading(false);
-				return;
-			}
-
-			console.log("Buscando extrato na URL:", apiUrl);
-
-			const response = await fetch(apiUrl, {
-				method: "GET",
-				headers: {
-					"Authorization": `Bearer ${token}`,
-					"Content-Type": "application/json"
-				}
-			});
-
-			console.log("Status da resposta:", response.status);
-
-			if (!response.ok) {
-				if (response.status === 403) {
-					throw new Error("Acesso negado. Verifique suas permissões.");
-				} else if (response.status === 401) {
-					throw new Error("Token expirado ou inválido");
-				} else if (response.status === 404) {
-					// Nenhuma transação encontrada - não é um erro
-					setTransactions([]);
-					setLoading(false);
-					return;
-				}
-				throw new Error(`Erro ao carregar extrato: ${response.status}`);
-			}
-
-			const data = await response.json();
-			console.log("Transações recebidas:", data);
-			setTransactions(data);
-
-		} catch (err) {
-			console.error("Erro ao buscar extrato:", err);
-			setError(err.message);
-		} finally {
-			setLoading(false);
-		}
-	}
+	useEffect(() => {
+		loadUserInfo();
+	}, [loadUserInfo]);
 
 	function formatDate(dateString) {
 		try {
@@ -138,26 +165,61 @@ export default function PageInfo() {
 			return {
 				description: `Transferência para ${transaction.alunoNome || "Aluno"}`,
 				amount: -transaction.quantidadeMoedas,
-				type: "TRANSFERENCIA"
+				type: "TRANSFERENCIA",
+				icon: "fa-arrow-up",
+				color: "red"
 			};
 		} else if (userRole === "ROLE_ALUNO") {
 			return {
 				description: `Recebido de ${transaction.professorNome || "Professor"}`,
 				amount: transaction.quantidadeMoedas,
-				type: "RECOMPENSA"
+				type: "RECOMPENSA",
+				icon: "fa-arrow-down",
+				color: "green"
 			};
 		}
 		
 		return {
 			description: transaction.mensagem || "Transação",
 			amount: transaction.quantidadeMoedas,
-			type: "TRANSACAO"
+			type: "TRANSACAO",
+			icon: "fa-exchange",
+			color: "blue"
 		};
 	}
+
+	function getResgateTransactionDisplayInfo(transaction) {
+		return {
+			description: `Resgate: ${transaction.vantagemNome || "Vantagem"}`,
+			amount: -transaction.custoMoedas,
+			type: "RESGATE",
+			icon: "fa-ticket",
+			color: "purple",
+			cupom: transaction.codigoCupom
+		};
+	}
+
+	// Combinar e ordenar todas as transações por data
+	const allTransactions = [
+		...transactions.map(tx => ({
+			...tx,
+			isResgate: false,
+			displayInfo: getTransactionDisplayInfo(tx, userInfo.role),
+			date: tx.dataTransacao
+		})),
+		...resgateTransactions.map(tx => ({
+			...tx,
+			isResgate: true,
+			displayInfo: getResgateTransactionDisplayInfo(tx),
+			date: tx.dataResgate
+		}))
+	].sort((a, b) => new Date(b.date) - new Date(a.date));
 
 	function refreshExtrato() {
 		setLoading(true);
 		setError(null);
+		setTransactions([]);
+		setResgateTransactions([]);
 		loadUserInfo();
 	}
 
@@ -221,7 +283,7 @@ export default function PageInfo() {
 					</div>
 				)}
 
-				{!loading && !error && transactions.length === 0 && (
+				{!loading && !error && allTransactions.length === 0 && (
 					<div className="text-center text-gray-500 py-8 bg-gray-50 rounded-lg">
 						<i className="fa-solid fa-receipt text-4xl mb-3 text-gray-400"></i>
 						<div className="font-semibold">Nenhuma transação encontrada</div>
@@ -229,33 +291,34 @@ export default function PageInfo() {
 					</div>
 				)}
 
-				{!loading && !error && transactions.length > 0 && (
+				{!loading && !error && allTransactions.length > 0 && (
 					<div className="space-y-3">
-						{transactions.map((tx, index) => {
-							const displayInfo = getTransactionDisplayInfo(tx, userInfo.role);
+						{allTransactions.map((tx, index) => {
+							const displayInfo = tx.displayInfo;
 							
 							return (
 								<div 
-									key={tx.id || index} 
+									key={tx.id || `resgate-${index}`} 
 									className="flex justify-between items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition"
 								>
 									<div className="flex items-center">
 										<div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${
-											displayInfo.amount > 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+											displayInfo.color === 'green' ? 'bg-green-100 text-green-600' :
+											displayInfo.color === 'red' ? 'bg-red-100 text-red-600' :
+											displayInfo.color === 'purple' ? 'bg-purple-100 text-purple-600' :
+											'bg-blue-100 text-blue-600'
 										}`}>
-											<i className={`fa-solid ${
-												displayInfo.amount > 0 ? 'fa-arrow-down' : 'fa-arrow-up'
-											}`}></i>
+											<i className={`fa-solid ${displayInfo.icon}`}></i>
 										</div>
 										<div>
 											<div className="font-semibold text-gray-800">
 												{displayInfo.description}
 											</div>
 											<div className="text-sm text-gray-500">
-												{tx.mensagem || "Transação de moedas"}
+												{tx.mensagem || (tx.isResgate ? `Cupom: ${displayInfo.cupom}` : "Transação de moedas")}
 											</div>
 											<div className="text-xs text-gray-400">
-												{formatDate(tx.dataTransacao)}
+												{formatDate(tx.date)}
 											</div>
 										</div>
 									</div>
